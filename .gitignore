@@ -1,0 +1,5 @@
+# Exclude executables, .o, and .d files.
+
+*.d
+*.o
+game
