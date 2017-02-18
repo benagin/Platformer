@@ -3,13 +3,21 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "FTLoader.hpp"
+#include <memory>
 
+//#include "utils/FTLoader.hpp"
+#include "utils/Font.hpp"
+#include "graphics/Shader.hpp"
 
 GLFWwindow* window;
-
+Font* font;
+std::shared_ptr<Shader> shader;
+GLuint VBO, VAO;
 
 static void
 error_callback(int error, const char* description) {
@@ -44,6 +52,11 @@ cursor_position_callback(GLFWwindow* window, double xmouse, double ymouse) {
   //int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 }
 
+static void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mod) {
+  if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 
 static void
 resize_callback(GLFWwindow* window, int width, int height)
@@ -66,24 +79,33 @@ init() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
   // Compile and setup shader.
-  /*
-  Shader shader("assets/shaders/text.vs", "assets/shaders/text.frag");
-  glm::mat4 projection = glm::orth(0.0f, 800.0f, 0.0f, 600.0f);
-  shader.Use();
-  glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1,
+  
+  shader = std::make_shared<Shader>("../assets/shaders/text.vs", "../assets/shaders/text.frag");
+  glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+  shader->set_uniform("projection");
+
+  shader->bind();
+
+  glUniformMatrix4fv(shader->get_uniform("projection"), 1,
       GL_FALSE, glm::value_ptr(projection));
-  */
+  shader->unbind();
+  font = Font::LoadFont("../assets/fonts/Roboto-Light.ttf", 48);
+  if(!font) {
+    std::cout << "Error: Font: Failed to load font" << std::endl;
+    exit(1);
+  }
 
   // Setup FreeType for redering text.
-  FTLoader* ftl = new FTLoader();
+  //FTLoader* ftl = new FTLoader();
 
-  glBindTexture(GL_TEXTURE_2D, 0);
+  //glBindTexture(GL_TEXTURE_2D, 0);
 
-  delete ftl;
+  //delete ftl;
 
   // Configure VAO/VBO for texture quads.
-  /*
+  
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glBindVertexArray(VAO);
@@ -93,7 +115,50 @@ init() {
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
-  */
+  
+}
+
+static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _location,
+  const glm::vec3& _color) {
+
+  float x = _location[0];
+  for(auto iter = _str.begin(); iter < _str.end(); ++iter) {
+    Font::Glyph* glpyh = _font->GetGlyph(*iter);
+    if(glpyh) {
+      if(*iter == ' ') {
+        x += (glpyh->GetAdvance() >> 6);
+        continue;
+      }
+      
+      float xpos = x + glpyh->GetStride();
+      float ypos = _location[1] - (glpyh->GetWidth() - glpyh->GetStride());
+      float w = glpyh->GetWidth();
+      float h = glpyh->GetHeight();
+      GLfloat vertices[24] = {
+        xpos,     ypos + h,   0.0, 0.0,           
+        xpos,     ypos,       0.0, 1.0,
+        xpos + w, ypos,       1.0, 1.0,
+
+        xpos,     ypos + h,   0.0, 0.0,
+        xpos + w, ypos,       1.0, 1.0,
+        xpos + w, ypos + h,   1.0, 0.0           
+      };
+      glBindTexture(GL_TEXTURE_2D, glpyh->GetTexture());
+      glBindBuffer(GL_ARRAY_BUFFER, VBO);
+      glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+
+      x += (glpyh->GetAdvance() >> 6);
+    }
+    else {
+      // TODO(ANDREW): handle this case.
+      std::cout << "Invalid Glyph" << *iter << std::endl;
+    }
+  }
+
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // This function is called every frame to draw the scene.
@@ -108,6 +173,9 @@ static void render()
   glfwGetFramebufferSize(window, &width, &height);
 
   //float aspect = width/(float)height;
+  shader->bind();
+  RenderText(font, "This is a sample Text", glm::vec2(), glm::vec3(0.2, 0.3, 0.1));
+  shader->unbind();
 }
 
 
@@ -120,6 +188,14 @@ main() {
   if(!glfwInit()) {
     return -1;
   }
+  // NOTE(ANDREW): 17/02/2017
+  // This is setting the version of open gl that we are using
+  // In this case it is being set to version 3.3
+  // This will be moved out of main at some point.
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
   // Create a windowed mode window and its OpenGL context.
   window = glfwCreateWindow(640, 480, "Game", NULL, NULL);
@@ -157,6 +233,9 @@ main() {
   // Set the window resize call back.
   glfwSetFramebufferSizeCallback(window, resize_callback);
 
+  // Set keyboard callback
+  glfwSetKeyCallback(window, keyboard_callback);
+
   // Initialize scene.
   init();
 
@@ -172,6 +251,7 @@ main() {
     glfwPollEvents();
   }
 
+  delete font;
   // Quit program.
   glfwDestroyWindow(window);
   glfwTerminate();

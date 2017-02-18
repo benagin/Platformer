@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "Shader.hpp"
 using namespace std;
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {

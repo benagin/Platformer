@@ -4,6 +4,7 @@
 debug ?= 0
 
 # Replace with the directory that contains ft2build.h.
+# if the new Font implementation words, this isnt needed anymore.
 FTYPE_INC_DIR  ?= /usr/local/Cellar/freetype/2.7/include/freetype2/
 
 # Replace with the directory that contains freetype.a.
@@ -18,6 +19,10 @@ SRC_DIR ?= .
 CXX 	 = g++
 CXXFLAGS = -std=c++11 -Wall -Werror -pedantic
 
+ifeq ($(debug), 1)
+	CXXFLAGS += -g
+endif
+
 FRMWRKS  = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 LIBS     = -lglfw -lglew -lfreetype
 
@@ -31,8 +36,8 @@ DEPS = -MMD -MF $*.d
 SRCS = $(shell find . -path "*.cpp")
 OBJS = $(SRCS:.cpp=.o)
 
-
 # Executable Recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 # Build the game executable.
 game: $(OBJS)
@@ -43,8 +48,8 @@ game: $(OBJS)
 # Object File Recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 .cpp.o: $(SRCS)
-	@echo Compiling $@...
-	@$(CXX) -c $(CXXFLAGS) $(DEPS) $(INC_DIRS) $< -o $@
+	@echo Compiling $<...
+	@$(CXX) -c $(CXXFLAGS) $(DEPS) $(INC_DIRS) $(LIBS) $(FRMWRKS) $< -o $@
 	@cat $*.d >> Dependencies
 	@rm -f $*.d
 
@@ -53,7 +58,8 @@ game: $(OBJS)
 .PHONY: clean
 clean:
 	@echo Cleaning game and executables...
-	@rm -f $(MAIN) game
+	@rm -f $(OBJS) game
+	@rm Dependencies
 
 # Other Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 

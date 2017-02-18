@@ -50,8 +50,8 @@ LoadCharacters(FT_Face& _face) {
     const auto glyph = _face->glyph;
     const auto bitmap = glyph->bitmap;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, bitmap.width,
-        bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmap.width,
+        bitmap.rows, 0, GL_RGB, GL_UNSIGNED_BYTE,
         bitmap.buffer);
 
     // Set texture options.
