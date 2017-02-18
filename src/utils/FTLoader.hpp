@@ -10,6 +10,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "Font.hpp"
 
 /// Most of this code comes from:
 /// https://learnopengl.com/#!In-Practice/Text-Rendering
@@ -32,7 +33,7 @@ class FTLoader {
 
     // Load each character from the font face and add it to the characters map.
     void LoadCharacters(FT_Face& _face);
-
+    /*
     // Store metrics for each character in a font face.
     struct Character {
       GLuint m_textureID;   ///< Id for the glyph texture.
@@ -40,14 +41,16 @@ class FTLoader {
       glm::ivec2 m_bearing; ///< Offest from baseline to left/top of glyph.
       GLuint m_advance;     ///< Offset to advance to next glyph.
     };
-
+    */
+    Font::Glyph* GetGlyph(GLchar _ch);
   private:
 
     FT_Library m_ft{nullptr}; ///< Main FreeType object.
 
     FT_Face m_roboto{nullptr}; ///< Font face object for Roboto-Light.
 
-    std::map<GLchar, Character> m_robotoChars; ///< Store 128 ASCII characters.
+//    std::map<GLchar, Character> m_robotoChars; ///< Store 128 ASCII characters
+    std::map<GLchar, Font::Glyph> m_robotoChars; ///< Store 128 ASCII characters
 };
 
 #endif

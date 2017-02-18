@@ -29,20 +29,22 @@ public:
 		Glyph(GLuint _tex, const glm::ivec2& _size, 
 			 int _adv, int _stride);
 
-		/*
+		
 		Glyph(GLuint _tex, const glm::ivec2& _size, 
-			const glm::ivec2& _bearing, GLuint _adv);
-		*/
+			const glm::ivec2& _bearing, int _adv);
+		
 		int GetStride() { return m_stride; }
 		int GetAdvance() { return m_advance; }
-		float GetWidth() { return m_size[0]; }
-		float GetHeight() { return m_size[1]; }
+		float GetWidth() { return m_size.x; }
+		float GetHeight() { return m_size.y; }
+		float GetBearingX() { return m_bearing.x; }
+		float GetBearingY() { return m_bearing.y; }
 		GLuint GetTexture() { return m_textureId; }
 
 	private:
 		GLuint m_textureId; ///< the opengl texture id
 		glm::ivec2 m_size; 	///< the width and height of the texture
-		//glm::ivec2 m_bearing;
+		glm::ivec2 m_bearing; //< x and y bearing of the glyph
 		int m_advance; 			///< the distance in the x until the next character
 		int m_stride; 			///< X bearing
 	};
@@ -54,7 +56,8 @@ public:
 	/// @param _name the filename path of the font file
 	/// @param _height Height of the Font
 	/// @param _scale Scaling of the Font.
-	Font(const std::string& _name, int _height, int _scale);
+	Font(const std::string& _name, int _height, int _scale,
+		int _ascent, int _descent, int _lineGap);
 
 	/// @brief Font destructor
 	~Font() = default;
@@ -64,6 +67,7 @@ public:
 	/// @{
 	int GetHeight() { return m_height; }
 	int GetScale() { return m_scale; }
+	float GetYAdvance() { return (m_ascent - m_descent + m_lineGap) * m_scale; }
 	Glyph* GetGlyph(GLchar _ch);
 	/// @}
 	/// @name Loaders
@@ -86,6 +90,9 @@ private:
 
 	int m_height;												///< Height of the glyphs
 	int m_scale; 												///< Scaling using to generate the glyphs (this might not be needed)
+	int m_ascent;
+	int m_descent;
+	int m_lineGap;
 
 	std::string m_fontName; 						///< The name of the font: i.e: ariel.ttf with be ariel.
 	std::string m_path; 								///< the path to the font.

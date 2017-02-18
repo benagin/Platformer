@@ -50,8 +50,8 @@ LoadCharacters(FT_Face& _face) {
     const auto glyph = _face->glyph;
     const auto bitmap = glyph->bitmap;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmap.width,
-        bitmap.rows, 0, GL_RGB, GL_UNSIGNED_BYTE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, bitmap.width,
+        bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
         bitmap.buffer);
 
     // Set texture options.
@@ -61,10 +61,22 @@ LoadCharacters(FT_Face& _face) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Store character.
-    Character character{texture, glm::ivec2(bitmap.width, bitmap.rows),
+    Font::Glyph character(texture, glm::ivec2(bitmap.width, bitmap.rows),
       glm::ivec2(glyph->bitmap_left, glyph->bitmap_top),
-      static_cast<GLuint>(glyph->advance.x)};
+      static_cast<GLuint>(glyph->advance.x));
 
     m_robotoChars.emplace(c, character);
   }
 }
+
+Font::Glyph*
+FTLoader::
+GetGlyph(GLchar _ch) {
+  auto glyph = m_robotoChars.find(_ch);
+  if(glyph == m_robotoChars.end()) {
+    return nullptr;
+  }
+  return &glyph->second;
+}
+
+

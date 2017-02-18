@@ -1,4 +1,5 @@
 #include "Font.hpp"
+#include "GLDebug.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -12,10 +13,14 @@ Font::Glyph::
 Glyph(GLuint _tex, const glm::ivec2& _size, int _adv, int _stride):
 	m_textureId(_tex), m_size(_size), m_advance(_adv), m_stride(_stride) {}
 
+Font::Glyph::
+Glyph(GLuint _tex, const glm::ivec2& _size, 
+	const glm::ivec2& _bearing, int _adv): m_textureId(_tex),
+	m_size(_size), m_bearing(_bearing), m_advance(_adv), m_stride(0){}
 
 Font::
-Font(const std::string& _filename, int _height, int _scale): m_height(_height),
-	m_scale(_scale) {
+Font(const std::string& _filename, int _height, int _scale, int _ascent, int _descent, int _lineGap): m_height(_height),
+	m_scale(_scale),m_ascent(_ascent), m_descent(_descent), m_lineGap(_lineGap) {
 		// Geting the name of the file which is the name of font.
 		// NOTE(ANDREW); Not multiplatform
 		size_t pos = _filename.find_last_of('/');
@@ -52,8 +57,8 @@ LoadFont(const std::string& _filename, int _height) {
 	// Creating a new font
 
 	stbtt_fontinfo info;
-	int offset = stbtt_GetFontOffsetForIndex(buf, 0);
-	if(!stbtt_InitFont(&info, buf, offset)) {
+	//int offset = stbtt_GetFontOffsetForIndex(buf, 0);
+	if(!stbtt_InitFont(&info, buf, 0)) {
 		std::cout << "Error: Failed to load: " << _filename << std::endl;
 		return nullptr;
 	}
@@ -62,10 +67,10 @@ LoadFont(const std::string& _filename, int _height) {
 
 	// Gets the scale for the font for the given height
 	float scale = stbtt_ScaleForPixelHeight(&info, _height);
-	Font* font = new Font(_filename, _height, scale);
 
 	int ascent, descent, lineGap;
 	stbtt_GetFontVMetrics(&info, &ascent, &descent, &lineGap);
+	Font* font = new Font(_filename, _height, scale, ascent, descent, lineGap);
 	for(int i = 0; i < 128; ++i) {
 
 		unsigned char* bitmap = nullptr;	
@@ -95,23 +100,24 @@ LoadFont(const std::string& _filename, int _height) {
 			continue;
 		}
 		glBindTexture(GL_TEXTURE_2D, texId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap);
+		glCheckError();
 
 		// texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glCheckError();
 
 		//Font::Glyph glyph(texId, glm::ivec2(w,h), glm::ivec2(), advance);
 		Font::Glyph glyph(texId, glm::ivec2(w,h), advance, stride);
 		font->AddGlyph((GLchar) i, glyph);
-		texId = -1;
+		//texId = -1;
 
 		// NOTE(Andrew): Maybe the bitmap can be deleted
 		bitmap = nullptr;
 	}
-
 	return font;
 }
 

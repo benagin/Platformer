@@ -10,12 +10,15 @@
 
 #include <memory>
 
-//#include "utils/FTLoader.hpp"
+#include "utils/FTLoader.hpp"
 #include "utils/Font.hpp"
+#include "utils/GLDebug.hpp"
 #include "graphics/Shader.hpp"
 
 GLFWwindow* window;
 Font* font;
+FTLoader* font_loader;
+
 std::shared_ptr<Shader> shader;
 GLuint VBO, VAO;
 
@@ -85,6 +88,7 @@ init() {
   shader = std::make_shared<Shader>("../assets/shaders/text.vs", "../assets/shaders/text.frag");
   glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
   shader->set_uniform("projection");
+  shader->set_uniform("textColor");
 
   shader->bind();
 
@@ -98,9 +102,9 @@ init() {
   }
 
   // Setup FreeType for redering text.
-  //FTLoader* ftl = new FTLoader();
+  font_loader = new FTLoader();
 
-  //glBindTexture(GL_TEXTURE_2D, 0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
   //delete ftl;
 
@@ -115,39 +119,42 @@ init() {
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
-  
+  glCheckError(); 
 }
 
-static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _location,
-  const glm::vec3& _color) {
+static void RenderTextFTLoader(FTLoader* _font, const std::string& _str, const glm::vec2& _location,
+  float _scale, const glm::vec3& _color) {
+
+  shader->bind();
+  glUniform3f(shader->get_uniform("textColor"), _color.x, _color.y, _color.z);
+  glActiveTexture(GL_TEXTURE0);
+  glBindVertexArray(VAO);
 
   float x = _location[0];
   for(auto iter = _str.begin(); iter < _str.end(); ++iter) {
     Font::Glyph* glpyh = _font->GetGlyph(*iter);
     if(glpyh) {
-      if(*iter == ' ') {
-        x += (glpyh->GetAdvance() >> 6);
-        continue;
-      }
-      
-      float xpos = x + glpyh->GetStride();
-      float ypos = _location[1] - (glpyh->GetWidth() - glpyh->GetStride());
-      float w = glpyh->GetWidth();
-      float h = glpyh->GetHeight();
-      GLfloat vertices[24] = {
-        xpos,     ypos + h,   0.0, 0.0,           
-        xpos,     ypos,       0.0, 1.0,
-        xpos + w, ypos,       1.0, 1.0,
+      float xpos = x + glpyh->GetBearingX() * _scale;
+      float ypos = _location.y * _scale;
 
-        xpos,     ypos + h,   0.0, 0.0,
-        xpos + w, ypos,       1.0, 1.0,
-        xpos + w, ypos + h,   1.0, 0.0           
+      float w = glpyh->GetWidth() * _scale;
+      float h = glpyh->GetHeight() * _scale;
+
+      GLfloat vertices[6][4] = {
+        {xpos,     ypos + h,   0.0, 0.0},           
+        {xpos,     ypos,       0.0, 1.0},
+        {xpos + w, ypos,       1.0, 1.0},
+
+        {xpos,     ypos + h,   0.0, 0.0},
+        {xpos + w, ypos,       1.0, 1.0},
+        {xpos + w, ypos + h,   1.0, 0.0}           
       };
+
       glBindTexture(GL_TEXTURE_2D, glpyh->GetTexture());
       glBindBuffer(GL_ARRAY_BUFFER, VBO);
       glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-      glBindBuffer(GL_ARRAY_BUFFER, 0);
       glDrawArrays(GL_TRIANGLES, 0, 6);
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
 
       x += (glpyh->GetAdvance() >> 6);
     }
@@ -157,6 +164,58 @@ static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _l
     }
   }
 
+  shader->unbind();
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+static void RenderTextFont(Font* _font, const std::string& _str, const glm::vec2& _location,
+  float _scale, const glm::vec3& _color) {
+  shader->bind();
+  glUniform3f(shader->get_uniform("textColor"), _color.x, _color.y, _color.z);
+  glActiveTexture(GL_TEXTURE0);
+  glBindVertexArray(VAO);
+   
+  float x = _location.x;
+  for(auto iter = _str.begin(); iter < _str.end(); ++iter) {
+    Font::Glyph* glpyh = _font->GetGlyph(*iter);
+    if(glpyh) {
+      
+      if(*iter == ' ') {
+        x += (glpyh->GetAdvance() >> 6);
+        continue;
+      }
+
+      float xpos = x * _scale;// + glpyh->GetStride();
+      float ypos = _location.y + _font->GetYAdvance() * _scale;
+      float w = glpyh->GetWidth() * _scale;;
+      float h = glpyh->GetHeight() * _scale;
+
+      GLfloat vertices[6][4] = {
+        {xpos,     ypos + h,   0.0, 0.0},           
+        {xpos,     ypos,       0.0, 1.0},
+        {xpos + w, ypos,       1.0, 1.0},
+
+        {xpos,     ypos + h,   0.0, 0.0},
+        {xpos + w, ypos,       1.0, 1.0},
+        {xpos + w, ypos + h,   1.0, 0.0}           
+      };
+
+      glBindTexture(GL_TEXTURE_2D, glpyh->GetTexture());
+      glBindBuffer(GL_ARRAY_BUFFER, VBO);
+      glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+      x += (glpyh->GetAdvance() >> 6);
+    }
+    else {
+      // TODO(ANDREW): handle this case.
+      std::cout << "Invalid Glyph" << *iter << std::endl;
+    }
+  }
+
+  shader->unbind();
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -173,9 +232,8 @@ static void render()
   glfwGetFramebufferSize(window, &width, &height);
 
   //float aspect = width/(float)height;
-  shader->bind();
-  RenderText(font, "This is a sample Text", glm::vec2(), glm::vec3(0.2, 0.3, 0.1));
-  shader->unbind();
+  RenderTextFTLoader(font_loader, "This is a sample Text", glm::vec2(25, 25), 1.0f, glm::vec3(0.2, 0.7, 0.1));
+  RenderTextFont(font, "This is a sample Text", glm::vec2(540, 570), 0.5f, glm::vec3(0.2, 0.3, 0.7));
 }
 
 
@@ -252,6 +310,7 @@ main() {
   }
 
   delete font;
+  delete font_loader;
   // Quit program.
   glfwDestroyWindow(window);
   glfwTerminate();
