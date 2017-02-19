@@ -27,6 +27,12 @@ class Texture2d {
         /// @param _data The data of the texture.
         Texture2d(int _width, int _height, unsigned char* _data);
 
+        /// @brief Copy Constrcutor
+        Texture2d(const Texture2d& _tex);
+
+        /// @brief Copy operator
+        Texture2d operator= (const Texture2d& _tex);
+
         /// @}
         /// @name Operators
         /// @{
@@ -39,6 +45,12 @@ class Texture2d {
 
         /// @brief Binds the texture to the current texture object.
         void Bind() const;
+
+        /// @brief Whether a texture is loaded
+        bool IsLoaded() { return m_loaded; }
+
+        int GetWidth() { return m_width; }
+        int GetHeight() { return m_height; }
 
         /// @}
     private:
@@ -55,6 +67,7 @@ class Texture2d {
     GLuint m_wrapT;                 ///< Wrap of the T asis
     GLuint m_filterMin;             ///< Im not sure. Needed though.
     GLuint m_filterMax;             ///< Im not sure. Needed though.
+    bool m_loaded;                  ///< Says whether a texture is loaded intot he buffer
     static unsigned int m_nextId;   ///< used the next id
 };
 

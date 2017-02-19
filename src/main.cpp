@@ -1,3 +1,4 @@
+#include <memory>
 #include <iostream>
 
 #define GLEW_STATIC
@@ -8,20 +9,33 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <memory>
+
+#include "graphics/Shader.hpp"
+#include "graphics/Texture2d.hpp"
 
 #include "utils/FTLoader.hpp"
 #include "utils/Font.hpp"
 #include "utils/GLDebug.hpp"
-#include "graphics/Shader.hpp"
+#include "utils/TextureLoader.hpp"
+
+
+const float WIDTH = 680.0f;
+const float HEIGHT = 480.0f;
 
 GLFWwindow* window;
 Font* font;
 FTLoader* fontLoader;
 
 std::shared_ptr<Shader> shader;
+std::shared_ptr<Shader> sprite_shader;
 GLuint VBO, VAO;
 
+Texture2d texture;
+TextureLoader loader;
+
+GLuint quadVAO;
+glm::vec2 loc(0.0,0.0);
+glm::vec2 size(100,100);
 
 static void
 error_callback(int error, const char* description) {
@@ -52,8 +66,7 @@ mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 
 // This function is called when the mouse moves
-static void
-cursor_position_callback(GLFWwindow* window, double xmouse, double ymouse) {
+static void cursor_position_callback(GLFWwindow* window, double xmouse, double ymouse) {
   //int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 }
 
@@ -61,12 +74,42 @@ cursor_position_callback(GLFWwindow* window, double xmouse, double ymouse) {
 static void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mod) {
   if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GLFW_TRUE);
+  float speed = 2.0;
+  if(mod == GLFW_MOD_SHIFT)
+    speed *= 3;
+
+  switch(key) {
+    case GLFW_KEY_A:
+      if(loc.x <= 0)
+        loc.x = WIDTH - ( size.x);
+      else
+        loc.x -= speed;
+
+      break; 
+    case GLFW_KEY_D:
+      if(loc.x >= (WIDTH - ( size.x)))
+        loc.x = 0;
+      else
+        loc.x += speed;
+      break; 
+    case GLFW_KEY_W:
+      if(loc.y <= 0)
+        loc.y = HEIGHT - ( size.y);
+      else
+        loc.y -= speed;
+      break; 
+    case GLFW_KEY_S:
+      if(loc.y >= HEIGHT - ( size.y))
+        loc.y = 0;
+      else
+        loc.y += speed;
+      break; 
+  }
+
 }
 
 
-static void
-resize_callback(GLFWwindow* window, int width, int height)
-{
+static void resize_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
@@ -87,12 +130,23 @@ init() {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Compile and setup shader.
+  // text shaders
   shader = std::make_shared<Shader>("../assets/shaders/text.vs",
       "../assets/shaders/text.frag");
 
-  glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+  // sprite shaders
+  sprite_shader = std::make_shared<Shader>("../assets/shaders/sprite.vs",
+      "../assets/shaders/sprite.frag");
+
+  //glm::mat4 p = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT);
+  glm::mat4 projection = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f); 
   shader->AddUniform("projection");
   shader->AddUniform("textColor");
+
+  sprite_shader->AddUniform("model");
+  sprite_shader->AddUniform("projection");
+  sprite_shader->AddUniform("image");
+  sprite_shader->AddUniform("spriteColor");
 
   shader->Bind();
 
@@ -100,6 +154,18 @@ init() {
       GL_FALSE, glm::value_ptr(projection));
   shader->Unbind();
 
+  sprite_shader->Bind();
+  glUniformMatrix4fv(sprite_shader->GetUniform("projection"), 1,
+      GL_FALSE, glm::value_ptr(projection));
+  sprite_shader->Unbind();
+  sprite_shader->Unbind();
+
+  texture = loader.Load("../assets/textures/test_person.png"); // loader() will also work
+  if(!texture.IsLoaded()) {
+    std::cout << "Error: Textures: Texture Fialed to load" << std::endl;
+    exit(1);
+  }
+  // loading the font 
   font = Font::LoadFont("../assets/fonts/Roboto-Light.ttf", 48);
 
   if(!font) {
@@ -123,9 +189,36 @@ init() {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
   glCheckError();
+
+
+  // Sprite rendering Setup
+   GLuint spriteVBO;
+   GLfloat vertices[] = { 
+        // Pos      // Tex
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 
+    
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f
+   };
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &spriteVBO);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(quadVAO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);  
+    glBindVertexArray(0);
+
 }
 
-
+/*
 static void RenderTextFTLoader(FTLoader* _font, const std::string& _str, const glm::vec2& _location,
   float _scale, const glm::vec3& _color) {
 
@@ -226,7 +319,42 @@ static void RenderTextFont(Font* _font, const std::string& _str, const glm::vec2
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+*/
 
+static void RenderTexture(const Texture2d& _tex, const glm::vec2 _location , const glm::vec2& _size,
+    GLfloat _rotate = 0.0f, const glm::vec3& _color = glm::vec3(1.0)) {
+  
+  sprite_shader->Bind();  
+
+  /// NOTE(ANDREW): 19/02/2017
+  /// I didnt realize it was 12:30.
+  /// Anyway, This will later be with a matrix stack that is 
+  /// associated with the game entites. Later, I think the 
+  /// Textures will be associated with a game object.
+  glm::mat4 model;
+  model = glm::translate(model, glm::vec3(_location, 0.0f));
+
+  // im not sure the point of this.
+  //model = glm::translate(model, glm::vec3(0.5f + _size.x, 0.5f + _size.y, 0.0f));
+
+  model = glm::rotate(model, _rotate, glm::vec3(0,0,1));
+  model = glm::scale(model, glm::vec3(_size, 1.0));
+
+
+  glUniformMatrix4fv(sprite_shader->GetUniform("model"), 1,
+      GL_FALSE, glm::value_ptr(model));
+  glUniform3f(sprite_shader->GetUniform("spriteColor"), _color.x, _color.y, _color.z);
+
+  glActiveTexture(GL_TEXTURE0);
+  _tex.Bind();
+
+  // drawing
+  glBindVertexArray(quadVAO);
+  glDrawArrays(GL_TRIANGLES, 0, 6); 
+  glBindVertexArray(0);
+
+  sprite_shader->Unbind();
+}
 
 // This function is called every frame to draw the scene.
 static void render()
@@ -240,12 +368,16 @@ static void render()
   glfwGetFramebufferSize(window, &width, &height);
 
   //float aspect = width/(float)height;
+  /*
   RenderTextFTLoader(fontLoader, "This is a sample Text",
       glm::vec2(25, 25), 1.0f, glm::vec3(0.2, 0.7, 0.1));
 
   RenderTextFont(font, "This is a sample Text", glm::vec2(540, 570), 0.5f,
       glm::vec3(0.2, 0.3, 0.7));
+  */
+  RenderTexture(texture, loc, size);
 }
+
 
 
 int
@@ -267,7 +399,7 @@ main() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
   // Create a windowed mode window and its OpenGL context.
-  window = glfwCreateWindow(640, 480, "Game", NULL, NULL);
+  window = glfwCreateWindow(WIDTH, HEIGHT, "Game", NULL, NULL);
 
   if(!window) {
     glfwTerminate();

@@ -26,7 +26,7 @@ endif
 FRMWRKS  = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 LIBS     = -lglfw -lglew -lfreetype
 
-INC_DIRS = -I$(FTYPE_INC_DIR)
+INC_DIRS = -I$(FTYPE_INC_DIR) -I./
 LIB_DIRS = -L$(FTYPE_LINK_DIR)
 
 DEPS = -MMD -MF $*.d

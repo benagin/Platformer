@@ -111,7 +111,7 @@ GetAttribute(const std::string& _att) {
   auto loc = m_attributes.find(_att);
 
   if(loc == m_attributes.end()) {
-    std::cout << "Error: " << _att << " is not a attribute variable." << std::endl;
+    std::cout << "Error: '" << _att << "' is not a attribute variable." << std::endl;
 
     return -1;
   }
@@ -149,7 +149,7 @@ GLuint
 Shader::
 AddUniform(const std::string& _att) {
   GLuint t = glGetUniformLocation(m_program, _att.c_str());
-  m_attributes.emplace(_att, t);
+  m_uniforms.emplace(_att, t);
 
   return t;
 }

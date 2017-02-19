@@ -1,5 +1,10 @@
 # Change Log: Platformmer Game
 
+## 19/02/20017: Andrew
+* Added a texture loading object
+* Added a Texture rendering function to make sure the textures work. (They do)
+* Made a little solder move around the screen using wasd and shift will speed him up (very 	 rudimentary).
+
 ## 18/02/2017: Ben
 * Moving linker and framework includes from compile command to linker command in
   makefile.

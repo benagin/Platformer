@@ -4,6 +4,7 @@
 /// @Author Andrew Bregger 17/02/2017
 ///
 /// @brief Represents a font that is able to be rendered.
+///         Uses stb_truetype: Sean Barret
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef FONT_HPP_
