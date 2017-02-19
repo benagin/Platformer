@@ -17,7 +17,7 @@
 
 GLFWwindow* window;
 Font* font;
-FTLoader* font_loader;
+FTLoader* fontLoader;
 
 std::shared_ptr<Shader> shader;
 GLuint VBO, VAO;
@@ -86,7 +86,6 @@ init() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
   // Compile and setup shader.
   shader = std::make_shared<Shader>("../assets/shaders/text.vs",
       "../assets/shaders/text.frag");
@@ -102,20 +101,18 @@ init() {
   shader->Unbind();
 
   font = Font::LoadFont("../assets/fonts/Roboto-Light.ttf", 48);
+
   if(!font) {
     std::cout << "Error: Font: Failed to load font" << std::endl;
     exit(1);
   }
 
   // Setup FreeType for redering text.
-  font_loader = new FTLoader();
+  fontLoader = new FTLoader;
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  //delete ftl;
-
   // Configure VAO/VBO for texture quads.
-
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glBindVertexArray(VAO);
@@ -127,6 +124,7 @@ init() {
   glBindVertexArray(0);
   glCheckError();
 }
+
 
 static void RenderTextFTLoader(FTLoader* _font, const std::string& _str, const glm::vec2& _location,
   float _scale, const glm::vec3& _color) {
@@ -176,6 +174,7 @@ static void RenderTextFTLoader(FTLoader* _font, const std::string& _str, const g
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+
 
 static void RenderTextFont(Font* _font, const std::string& _str, const glm::vec2& _location,
   float _scale, const glm::vec3& _color) {
@@ -228,6 +227,7 @@ static void RenderTextFont(Font* _font, const std::string& _str, const glm::vec2
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+
 // This function is called every frame to draw the scene.
 static void render()
 {
@@ -240,7 +240,7 @@ static void render()
   glfwGetFramebufferSize(window, &width, &height);
 
   //float aspect = width/(float)height;
-  RenderTextFTLoader(font_loader, "This is a sample Text",
+  RenderTextFTLoader(fontLoader, "This is a sample Text",
       glm::vec2(25, 25), 1.0f, glm::vec3(0.2, 0.7, 0.1));
 
   RenderTextFont(font, "This is a sample Text", glm::vec2(540, 570), 0.5f,
@@ -321,7 +321,7 @@ main() {
   }
 
   delete font;
-  delete font_loader;
+  delete fontLoader;
 
   // Quit program.
   glfwDestroyWindow(window);

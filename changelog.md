@@ -1,5 +1,10 @@
 # Change Log: Platformmer Game
 
+## 18/02/2017: Ben
+* Moving linker and framework includes from compile command to linker command in
+  makefile.
+* Fixing standards and formatting.
+
 ## 18/02/2017: Andrew
 * Text Rendering works for the most part.
   * FTLoader: Partially works
