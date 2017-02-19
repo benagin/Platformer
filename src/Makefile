@@ -33,8 +33,8 @@ DEPS = -MMD -MF $*.d
 
 # File Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-SRCS = $(shell find . -path "*.cpp")
-OBJS = $(SRCS:.cpp=.o)
+SRCS := $(shell find . -path "*.cpp")
+OBJS := $(SRCS:.cpp=.o)
 
 # Executable Recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -42,14 +42,14 @@ OBJS = $(SRCS:.cpp=.o)
 # Build the game executable.
 game: $(OBJS)
 	@echo Linking $@...
-	@$(CXX) $(CXXFLAGS) $(LIBS) $(FRMWRKS) $(LIB_DIRS) $(OBJS) -o $@
+	@$(CXX) $(CXXFLAGS) $(LIBS) $(FRMWRKS) $(LIB_DIRS) $(FRMWRKS) $(LIBS) $(OBJS) -o $@
 	@rm -f *.o
 
 # Object File Recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 .cpp.o: $(SRCS)
 	@echo Compiling $<...
-	@$(CXX) -c $(CXXFLAGS) $(DEPS) $(INC_DIRS) $(LIBS) $(FRMWRKS) $< -o $@
+	@$(CXX) -c $(CXXFLAGS) $(DEPS) $(INC_DIRS) $< -o $@
 	@cat $*.d >> Dependencies
 	@rm -f $*.d
 
