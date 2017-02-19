@@ -4,6 +4,7 @@
 * Text Rendering works for the most part.
   * FTLoader: Partially works
   * Font: Works less than FTLoader.
+* Created a texture2d class.
 
 ## 17/02/2017: Andrew
 * Running OpenGl 3.3 (can run 4.1).
