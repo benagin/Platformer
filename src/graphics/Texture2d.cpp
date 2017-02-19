@@ -4,7 +4,7 @@ unsigned int Texture2d::m_nextId = 0;
 
 Texture2d::
 Texture2d(): m_uid(m_nextId++), m_width(0), m_height(0), m_intFormat(GL_RGB), 
-    m_imgFormat(GL_GRBS), m_wrapS(GL_REPEAT), m_wrapT(GL_REPEAT), m_filterMin(GL_LINEAR),
+    m_imgFormat(GL_RGB), m_wrapS(GL_REPEAT), m_wrapT(GL_REPEAT), m_filterMin(GL_LINEAR),
     m_filterMax(GL_LINEAR) {
     
     glGenTextures(1, &m_texture);
@@ -13,7 +13,7 @@ Texture2d(): m_uid(m_nextId++), m_width(0), m_height(0), m_intFormat(GL_RGB),
 Texture2d::
 Texture2d(int _width, int _height, unsigned char* _data): m_uid(m_nextId++), 
     m_width(_width), m_height(_height), m_intFormat(GL_RGB), 
-    m_imgFormat(GL_GRBS), m_wrapS(GL_REPEAT), m_wrapT(GL_REPEAT), m_filterMin(GL_LINEAR),
+    m_imgFormat(GL_RGB), m_wrapS(GL_REPEAT), m_wrapT(GL_REPEAT), m_filterMin(GL_LINEAR),
     m_filterMax(GL_LINEAR) {
     
     glGenTextures(1, &m_texture);

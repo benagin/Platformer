@@ -46,7 +46,7 @@ class Texture2d {
     unsigned int m_uid;             ///< Id of the texture, this might be needed.
     unsigned int m_texture;         ///< Opengl texture id
     int m_width;                    ///< Width of the image
-    int m_width;                    ///< Height of the image.
+    int m_height;                   ///< Height of the image.
 
     GLuint m_intFormat;             ///< Internal format.
     GLuint m_imgFormat;             ///< Image format.
