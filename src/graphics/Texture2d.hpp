@@ -52,6 +52,18 @@ class Texture2d {
         int GetWidth() { return m_width; }
         int GetHeight() { return m_height; }
 
+        void SetInternalFormat(GLuint _inFormat, bool _imgFormatSame = false) {
+            m_intFormat = _inFormat;
+            if(_imgFormatSame)
+                SetImageFormat(_inFormat);
+        }
+
+        void SetImageFormat(GLuint _imgFormat, bool _intFormatSame = false) {
+            m_imgFormat = _imgFormat;
+            if(_intFormatSame)
+                SetImageFormat(_imgFormat);
+        }
+
         /// @}
     private:
 

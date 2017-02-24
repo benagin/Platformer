@@ -12,9 +12,12 @@
   * Level
   * Entity
   * Particle
+  * Sprites
   * User Interface
+  * Animation
 * Resource Management System
   * Textures
+  * Sprite Sheet 
   * Shaders
   * Fonts
   * Audio

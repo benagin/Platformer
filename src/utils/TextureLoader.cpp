@@ -33,6 +33,7 @@ Load(const std::string& _filename) {
 	}
 	std::cout << "Texture Loaded" << std::endl;
 	Texture2d tex(x,y, data);
+	// tex.SetInternalFormat(GL_RGBA, true);
 	stbi_image_free(data);
 	return tex;
 }

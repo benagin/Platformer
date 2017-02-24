@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-/// @name FTLoader
+/// @name FontLoader
 /// @group NA
 /// @Author Ben Smith 16/02/2017
 ///
@@ -18,7 +18,8 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include "Font.hpp"
+
+#include <string>
 
 /// Most of this code comes from:
 /// https://learnopengl.com/#!In-Practice/Text-Rendering
@@ -27,38 +28,29 @@
 /// .ttf files.
 #define ROBOTO "../assets/fonts/Roboto-Light.ttf"
 
+class Font;
+
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief FTLoader is used to load and perform necessary operations for the
+/// @brief FontLoader is used to load and perform necessary operations for the
 ///        freetype 2.7 library. This allows text rendering.
-class FTLoader {
+class FontLoader {
 
   public:
 
-    FTLoader();
+    FontLoader() = default;
 
-    ~FTLoader();
+    ~FontLoader();
+
+    Font* Load(const std::string& _path, int _height);
 
     // Load each character from the font face and add it to the characters map.
-    void LoadCharacters(FT_Face& _face);
-    /*
-    // Store metrics for each character in a font face.
-    struct Character {
-      GLuint m_textureID;   ///< Id for the glyph texture.
-      glm::ivec2 m_size;
-      glm::ivec2 m_bearing; ///< Offest from baseline to left/top of glyph.
-      GLuint m_advance;     ///< Offset to advance to next glyph.
-    };
-    */
-    Font::Glyph* GetGlyph(GLchar _ch);
+    Font* LoadCharacters(FT_Face& _face, Font* _font);
   private:
 
     FT_Library m_ft{nullptr}; ///< Main FreeType object.
 
-    FT_Face m_roboto{nullptr}; ///< Font face object for Roboto-Light.
-
-//    std::map<GLchar, Character> m_robotoChars; ///< Store 128 ASCII characters
-    std::map<GLchar, Font::Glyph> m_robotoChars; ///< Store 128 ASCII characters
+    FT_Face m_face {nullptr}; ///< Font face object
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "Shader.hpp"
-
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::
 Shader(const GLchar* _vertPath, const GLchar* _fragPath) {
@@ -153,3 +153,60 @@ AddUniform(const std::string& _att) {
 
   return t;
 }
+
+void 
+Shader::
+SetFloat(const std::string& _att, float _f) {
+  glUniform1f(GetUniform(_att), _f);
+}
+
+void 
+Shader::
+SetInteger(const std::string& _att, int _i) {
+  glUniform1i(GetUniform(_att), _i);
+}
+
+
+void 
+Shader::
+SetVector2f(const std::string& _att, float _f1, float _f2) {
+  glUniform2f(GetUniform(_att), _f1, _f2);
+}
+
+void 
+Shader::
+SetVector3f(const std::string& _att, float _f1, float _f2, float _f3) {
+  glUniform3f(GetUniform(_att), _f1, _f2, _f3);
+}
+
+void 
+Shader::
+SetVector4f(const std::string& _att, float _f1, float _f2, float _f3, float _f4) {
+  glUniform4f(GetUniform(_att), _f1, _f2, _f3, _f4);
+}
+
+
+void 
+Shader::
+SetVector2f(const std::string& _att, const glm::vec2& _v) {
+  SetVector2f(_att, _v.x, _v.y);
+}
+
+void 
+Shader::
+SetVector3f(const std::string& _att, const glm::vec3& _v) {
+  SetVector3f(_att, _v.x, _v.y, _v.z);
+}
+
+void 
+Shader::
+SetVector4f(const std::string& _att, const glm::vec4& _v) {
+  SetVector4f(_att, _v.x, _v.y, _v.z, _v.w);
+}
+
+void
+Shader::
+SetMatrix4(const std::string& _att, const glm::mat4& _mat) {
+  glUniformMatrix4fv(GetUniform(_att), 1, GL_FALSE, glm::value_ptr(_mat));
+}
+

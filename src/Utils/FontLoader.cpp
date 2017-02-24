@@ -1,38 +1,14 @@
-#include "FTLoader.hpp"
+#include "FontLoader.hpp"
+#include "Font.hpp"
+
+FontLoader::
+~FontLoader() {}
 
 
-FTLoader::
-FTLoader() {
-  m_ft = FT_Library();
-
-  if(FT_Init_FreeType(&m_ft))
-    std::cerr << "Could not init FreeType Library (FTLoader Constructor)" <<
-      std::endl;
-
-  m_roboto = FT_Face();
-
-  // ROBOTO is defined in the header as the path to the Roboto-Light.ttf file.
-  if(FT_New_Face(m_ft, ROBOTO, 0, &m_roboto))
-    std::cerr << "Failed to load font (Roboto-Light)." << std::endl;
-
-  FT_Set_Pixel_Sizes(m_roboto, 0, 48);
-
-  LoadCharacters(m_roboto);
-}
-
-
-FTLoader::
-~FTLoader() {
-  FT_Done_Face(m_roboto);
-  FT_Done_FreeType(m_ft);
-}
-
-
-void
-FTLoader::
-LoadCharacters(FT_Face& _face) {
+Font*
+FontLoader::
+LoadCharacters(FT_Face& _face, Font* _font) {
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
   for(GLubyte c = 0; c < 128; c++) {
 
     // Load each character frome the font face.
@@ -65,18 +41,34 @@ LoadCharacters(FT_Face& _face) {
       glm::ivec2(glyph->bitmap_left, glyph->bitmap_top),
       static_cast<GLuint>(glyph->advance.x));
 
-    m_robotoChars.emplace(c, character);
+    _font->AddGlyph(c, character);
   }
+  FT_Done_Face(m_face);
+  FT_Done_FreeType(m_ft);
+
+  return _font;
 }
 
-Font::Glyph*
-FTLoader::
-GetGlyph(GLchar _ch) {
-  auto glyph = m_robotoChars.find(_ch);
-  if(glyph == m_robotoChars.end()) {
-    return nullptr;
-  }
-  return &glyph->second;
+Font*
+FontLoader::
+Load(const std::string& _path, int _height) {
+  assert(_height > 0);
+
+  m_ft = FT_Library();
+
+  if(FT_Init_FreeType(&m_ft))
+    std::cerr << "Could not init FreeType Library (FontLoader Constructor)" <<
+      std::endl;
+
+  m_face = FT_Face();
+
+  // ROBOTO is defined in the header as the path to the Roboto-Light.ttf file.
+  if(FT_New_Face(m_ft, _path.c_str(), 0, &m_face))
+    std::cerr << "Failed to load font " << _path << std::endl;
+
+  FT_Set_Pixel_Sizes(m_face, 0, _height);
+
+  Font* font = new Font(_path, _height);
+
+  return LoadCharacters(m_face, font);
 }
-
-

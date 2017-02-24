@@ -17,7 +17,7 @@ SRC_DIR ?= .
 # Compiler Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 CXX 	 = g++
-CXXFLAGS = -std=c++11 -Wall -Werror -pedantic
+CXXFLAGS = -std=c++11 -Wall -Werror -pedantic -g
 
 ifeq ($(debug), 1)
 	CXXFLAGS += -g
@@ -42,7 +42,7 @@ OBJS := $(SRCS:.cpp=.o)
 # Build the game executable.
 game: $(OBJS)
 	@echo Linking $@...
-	@$(CXX) $(CXXFLAGS) $(LIBS) $(FRMWRKS) $(LIB_DIRS) $(FRMWRKS) $(LIBS) $(OBJS) -o $@
+	@$(CXX) $(CXXFLAGS) $(LIBS) $(INC_DIRS) $(FRMWRKS) $(LIB_DIRS) $(FRMWRKS) $(LIBS) $(OBJS) -o $@
 	@rm -f *.o
 
 # Object File Recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -51,7 +51,6 @@ game: $(OBJS)
 	@echo Compiling $<...
 	@$(CXX) -c $(CXXFLAGS) $(DEPS) $(INC_DIRS) $< -o $@
 	@cat $*.d >> Dependencies
-	@rm -f $*.d
 
 # Cleanup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -59,6 +58,7 @@ game: $(OBJS)
 clean:
 	@echo Cleaning game and executables...
 	@rm -f $(OBJS) game
+	@rm $(shell find . -path "*.d")
 	@rm Dependencies
 
 # Other Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

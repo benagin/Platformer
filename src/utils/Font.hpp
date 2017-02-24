@@ -60,8 +60,7 @@ class Font {
     /// @param _name the filename path of the font file
     /// @param _height Height of the Font
     /// @param _scale Scaling of the Font.
-    Font(const std::string& _name, int _height, int _scale,
-        int _ascent, int _descent, int _lineGap);
+    Font(const std::string& _name, int _height);
 
     /// @brief Font destructor
     ~Font() = default;
@@ -71,22 +70,7 @@ class Font {
     /// @{
     int GetHeight() { return m_height; }
 
-    int GetScale() { return m_scale; }
-
-    float GetYAdvance() { return (m_ascent - m_descent + m_lineGap) * m_scale; }
-
     Glyph* GetGlyph(GLchar _ch);
-    /// @}
-    /// @name Loaders
-    /// @{
-    /////////////////////////////////////////////////////////////////////////////
-    /// @brief Loads a font from a file.
-    /// @param _filename the full path of the font file
-    /// @param _height height of the rendered glyphs
-    ///
-    /// @note For now we assume the filename in ttf file format
-    static Font* LoadFont(const std::string& _filename, int _height);
-
     /// @}
 
   private:
@@ -97,15 +81,11 @@ class Font {
     void AddGlyph(GLchar _ch, const Glyph& _glyph);
 
     int m_height; ///< Height of the glyphs
-    int m_scale;  ///< Scaling using to generate the glyphs
-                  ///< (this might not be needed)
-    int m_ascent;
-    int m_descent;
-    int m_lineGap;
 
     std::string m_fontName; ///< The name of the font: i.e: ariel.ttf with be ariel.
     std::string m_path; ///< the path to the font.
     std::map<GLchar, Glyph> m_glyphs; ///< Map fo characters to the glyph data.
+    friend class FontLoader;
 };
 
 #endif
