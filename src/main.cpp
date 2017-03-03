@@ -6,15 +6,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Application/Game.hpp"
 #include "Entities/Entity.hpp"
 
 #include "Graphics/Shader.hpp"
 #include "Graphics/Texture2d.hpp"
 #include "Graphics/ui/Window.hpp"
+#include "Graphics/Font.hpp"
 
 
 #include "Utils/FontLoader.hpp"
-#include "Utils/Font.hpp"
 #include "Utils/GLDebug.hpp"
 #include "Utils/TextureLoader.hpp"
 #include "Utils/GameConfig.hpp"
@@ -32,7 +33,7 @@ std::shared_ptr<Shader> shader;
 std::shared_ptr<Shader> sprite_shader;
 GLuint VBO, VAO;
 
-Texture2d texture;
+Texture2d* texture;
 TextureLoader loader;
 
 std::shared_ptr<Entity> entity;
@@ -40,7 +41,11 @@ std::shared_ptr<Entity> entity;
 GLuint quadVAO;
 glm::vec3 loc(0.0,0.0,0.0);
 glm::vec2 size(100,100);
+Game* game;
 
+
+
+/*
 static void
 error_callback(int error, const char* description) {
   std::cerr << description << std::endl;
@@ -58,14 +63,12 @@ mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
   int width, height;
   glfwGetWindowSize(window, &width, &height);
 
-  /*
   if(action == GLFW_PRESS) {
     bool shift = (mods & GLFW_MOD_SHIFT) != 0;
     bool ctrl  = (mods & GLFW_MOD_CONTROL) != 0;
     bool alt   = (mods & GLFW_MOD_ALT) != 0;
 
   }
-  */
 }
 
 
@@ -117,7 +120,6 @@ static void resize_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-
 static void
 init() {
   // Initialize time.
@@ -160,9 +162,12 @@ init() {
   sprite_shader->SetMatrix4("projection", projection);
   sprite_shader->Unbind();
 
-  texture = loader.Load("../assets/textures/test_person.png"); // loader() will also work
-  if(!texture.IsLoaded()) {
-    std::cout << "Error: Textures: Texture Fialed to load" << std::endl;
+  texture = loader.LoadPtr("../assets/textures/test_person.png"); // loader() will also work
+  if(!texture) {
+    std::cout << "Texture is null\n";
+  }
+  if(!texture->IsLoaded()) {
+    std::cout << "Error: Textures: Texture Failed to load" << std::endl;
     exit(1);
   }
   // loading the font 
@@ -173,7 +178,7 @@ init() {
     exit(1);
   }
 
-  entity = std::make_shared<Entity>(texture, loc, size);
+  entity = std::make_shared<Entity>(*texture, loc, size);
 
 
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -193,8 +198,9 @@ init() {
   Renderable::Init();
 
 }
+*/
 
-
+/*
 static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _location,
   float _scale, const glm::vec3& _color) {
 
@@ -210,7 +216,7 @@ static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _l
 
     if(glpyh) {
       float xpos = x + glpyh->GetBearingX() * _scale;
-      float ypos = _location.y * _scale;
+      float ypos = _location.y - (glpyh->GetHeight() - glpyh->GetBearingY())  * _scale;
 
       float w = glpyh->GetWidth() * _scale;
       float h = glpyh->GetHeight() * _scale;
@@ -231,7 +237,7 @@ static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _l
       glDrawArrays(GL_TRIANGLES, 0, 6);
       glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-      x += (glpyh->GetAdvance() >> 6);
+      x += (glpyh->GetAdvance() >> 6) * _scale;
     }
     else {
       // TODO(ANDREW): handle this case.
@@ -243,9 +249,11 @@ static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _l
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+*/
 
 
 // This function is called every frame to draw the scene.
+/*
 static void render()
 {
   // Clear framebuffer.
@@ -257,81 +265,50 @@ static void render()
   entity->SetLocation(loc);
   entity->Draw(*sprite_shader);
 }
-
+*/
 
 
 int
 main() {
+
+
+  game = new Game();
+  game->Init(); 
   GameConfig config("../config/game_config.ini");
+
   // Set error callback.
-  glfwSetErrorCallback(error_callback);
+  // glfwSetErrorCallback(error_callback);
 
-  // Initialize the library.
-  if(!glfwInit()) {
-    return -1;
-  }
-  // NOTE(ANDREW): 17/02/2017
-  // This is setting the version of open gl that we are using
-  // In this case it is being set to version 3.3
-  // This will be moved out of main at some point.
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-  window = Window::Init(Windowed);
-  HEIGHT = window->GetHeight();
-  WIDTH = window->GetWidth();
-  window->Init(); 
+  // window = Window::Init(Windowed);
+  // HEIGHT = window->GetHeight();
+  // WIDTH = window->GetWidth();
+  // window->Init(); 
 
   // Initialize GLEW.
-  glewExperimental = true;
-  if(glewInit() != GLEW_OK) {
-    std::cerr << "Failed to initialize GLEW" << std::endl;
-    return -1;
-  }
+  // glew_init();
 
-  glGetError();
+  // // Set vsync.
+  // glfwSwapInterval(1);
 
-  std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-  std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION)
-    << std::endl;
+  // // Set cursor position callback.
+  // glfwSetCursorPosCallback(window->GlfwWindow(), cursor_position_callback);
 
-  // Set vsync.
-  glfwSwapInterval(1);
+  // // Set mouse button callback.
+  // glfwSetMouseButtonCallback(window->GlfwWindow(), mouse_button_callback);
 
-  // Set cursor position callback.
-  glfwSetCursorPosCallback(window->GlfwWindow(), cursor_position_callback);
+  // // Set the window resize call back.
+  // glfwSetFramebufferSizeCallback(window->GlfwWindow(), resize_callback);
 
-  // Set mouse button callback.
-  glfwSetMouseButtonCallback(window->GlfwWindow(), mouse_button_callback);
-
-  // Set the window resize call back.
-  glfwSetFramebufferSizeCallback(window->GlfwWindow(), resize_callback);
-
-  // Set keyboard callback
-  glfwSetKeyCallback(window->GlfwWindow(), keyboard_callback);
+  // // Set keyboard callback
+  // glfwSetKeyCallback(window->GlfwWindow(), keyboard_callback);
 
   // Initialize scene.
-  init();
 
-  // Loop until the user closes the window.
-  while(!window->ShouldClose()) {
-    // Render scene.
-    render();
-
-    // Swap front and back buffers.
-    window->SwapBuffers();
-
-    // Poll for and process events.
-    window->PollEvents();
-  }
-
-  delete font;
-
+  game->Run();
+  // game->Close();
   // Quit program.
-  delete window;
-  glfwTerminate();
+  delete game;
 
+  glfwTerminate();
   return 0;
 }

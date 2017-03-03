@@ -36,6 +36,11 @@ public:
 	/// @param _filename The path name to the image.
 	/// @return The new texture	
 	Texture2d Load(const std::string& _filename);
+
+	/// @brief Another interface for creating a texture
+	/// @param _filename The path name to the image.
+	/// @return The new texture	pointer
+	Texture2d* LoadPtr(const std::string& _filename);
 	
 	/// @}
 	/// @name Delete Operators and constructors

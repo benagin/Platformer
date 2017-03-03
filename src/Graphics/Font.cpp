@@ -1,5 +1,5 @@
 #include "Font.hpp"
-#include "GLDebug.hpp"
+#include "Utils/GLDebug.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>

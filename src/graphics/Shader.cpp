@@ -2,7 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Shader::
-Shader(const GLchar* _vertPath, const GLchar* _fragPath) {
+Shader(const std::string& _vertPath, const std::string& _fragPath) {
   std::string vertexCode;
   std::string fragmentCode;
   std::ifstream vShaderFile;
@@ -14,8 +14,8 @@ Shader(const GLchar* _vertPath, const GLchar* _fragPath) {
 
   try {
     // Open files.
-    vShaderFile.open(_vertPath);
-    fShaderFile.open(_fragPath);
+    vShaderFile.open(_vertPath.c_str());
+    fShaderFile.open(_fragPath.c_str());
     std::stringstream vShaderStream, fShaderStream;
 
     // Read file's buffer contents into streams.

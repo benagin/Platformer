@@ -19,13 +19,12 @@ class Texture2d {
         /// @name Constructors
         /// @{
 
-        /// @brief Default Texture2d giving default values for texture representation.
-        Texture2d();
         /// @brief Font Constructor
+        /// @param _gltex The gl texture buffer.
         /// @param _width The width of the texture
         /// @param _height The height of the textre
         /// @param _data The data of the texture.
-        Texture2d(int _width, int _height, unsigned char* _data);
+        Texture2d(GLuint _gltex, int _width, int _height, unsigned int* _data);
 
         /// @brief Copy Constrcutor
         Texture2d(const Texture2d& _tex);
@@ -37,12 +36,6 @@ class Texture2d {
         /// @name Operators
         /// @{
 
-        /// @brief Generates the gl texture representation.
-        /// @param _width The width of the texture
-        /// @param _height The height of the textre
-        /// @param _data The data of the texture.
-        bool Generate(int _width, int _height, unsigned char* _data);
-
         /// @brief Binds the texture to the current texture object.
         void Bind() const;
 
@@ -52,18 +45,6 @@ class Texture2d {
         int GetWidth() { return m_width; }
         int GetHeight() { return m_height; }
 
-        void SetInternalFormat(GLuint _inFormat, bool _imgFormatSame = false) {
-            m_intFormat = _inFormat;
-            if(_imgFormatSame)
-                SetImageFormat(_inFormat);
-        }
-
-        void SetImageFormat(GLuint _imgFormat, bool _intFormatSame = false) {
-            m_imgFormat = _imgFormat;
-            if(_intFormatSame)
-                SetImageFormat(_imgFormat);
-        }
-
         /// @}
     private:
 
@@ -72,14 +53,8 @@ class Texture2d {
     int m_width;                    ///< Width of the image
     int m_height;                   ///< Height of the image.
 
-    GLuint m_intFormat;             ///< Internal format.
-    GLuint m_imgFormat;             ///< Image format.
-
-    GLuint m_wrapS;                 ///< Wrap of the S axis 
-    GLuint m_wrapT;                 ///< Wrap of the T asis
-    GLuint m_filterMin;             ///< Im not sure. Needed though.
-    GLuint m_filterMax;             ///< Im not sure. Needed though.
     bool m_loaded;                  ///< Says whether a texture is loaded intot he buffer
+    unsigned int* m_data;           ///< Raw texture data.
     static unsigned int m_nextId;   ///< used the next id
 };
 

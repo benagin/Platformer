@@ -1,5 +1,5 @@
 #include "FontLoader.hpp"
-#include "Font.hpp"
+#include "Graphics/Font.hpp"
 
 FontLoader::
 ~FontLoader() {}
@@ -26,9 +26,16 @@ LoadCharacters(FT_Face& _face, Font* _font) {
     const auto glyph = _face->glyph;
     const auto bitmap = glyph->bitmap;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, bitmap.width,
-        bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
-        bitmap.buffer);
+    glTexImage2D(
+      GL_TEXTURE_2D, 
+      0, 
+      GL_RED, 
+      bitmap.width,
+      bitmap.rows, 
+      0, 
+      GL_RED, 
+      GL_UNSIGNED_BYTE,
+      bitmap.buffer);
 
     // Set texture options.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

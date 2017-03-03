@@ -24,7 +24,7 @@ ifeq ($(debug), 1)
 endif
 
 FRMWRKS  = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
-LIBS     = -lglfw -lglew -lfreetype
+LIBS     = -lglfw -lglew -lfreetype -lIL -lILUT -lILU
 
 INC_DIRS = -I$(FTYPE_INC_DIR) -I./
 LIB_DIRS = -L$(FTYPE_LINK_DIR)

@@ -15,7 +15,7 @@ class Shader {
   public:
 
     // Construct reads and builds the shader
-    Shader(const GLchar* _vertexPath, const GLchar* _fragPath);
+    Shader(const std::string& _vertexPath, const std::string& _fragPath);
 
     // Bind and unbind the program.
     void Bind();

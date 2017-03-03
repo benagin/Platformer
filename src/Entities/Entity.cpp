@@ -30,7 +30,9 @@ Draw(Shader& _shader) {
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+  glCheckError();
   glBindVertexArray(0);
+  glCheckError();
 
   _shader.Unbind();
   glCheckError();

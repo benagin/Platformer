@@ -57,8 +57,8 @@ Init(WindowMode _mode) {
 	/// and stored in a GameConfig object.
 	/// At least, thats what im thinking.
 
-	int height = 680;
-	int width = 480;
+	int height = 480;
+	int width = 640;
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
 	switch(_mode) {
@@ -80,6 +80,9 @@ Init(WindowMode _mode) {
 			break;
 	}
 	Window* window = new Window("Platformer", width, height, _mode, monitor);
+	double x, y;
+	glfwGetCursorPos(window->GlfwWindow(), &x, &y);
+	window->SetMouseLocation(glm::dvec2(x, y));
 	return window;
 }
 
@@ -104,7 +107,18 @@ SwapBuffers() {
 
 void
 Window::
+SetMouseLocation(const glm::dvec2& _pos) {
+	m_mouseLocation = _pos;
+}
+
+void
+Window::
 PollEvents() {
 	glfwPollEvents();
 }
 
+void
+Window::
+PostQuit() {
+	glfwSetWindowShouldClose(m_window, 1);
+}
