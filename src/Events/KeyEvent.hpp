@@ -127,20 +127,7 @@ enum Key {
 	Key_Menu = GLFW_KEY_MENU,
 	NUM_KEYS
 };
-
-enum Mod {
-	Mod_None = 0x0,
-	Mod_Shift = GLFW_MOD_SHIFT,
-	Mod_Control = GLFW_MOD_CONTROL,
-	Mod_Alt = GLFW_MOD_ALT,
-	Mod_Super = GLFW_MOD_SUPER
-};
-
-enum Action {
-	Action_Release = GLFW_RELEASE,
-	Action_Press = GLFW_PRESS,
-	Action_Repeat = GLFW_REPEAT
-};
+	
 
 
 class KeyEvent: public Event {

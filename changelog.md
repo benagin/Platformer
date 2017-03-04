@@ -1,5 +1,17 @@
 # Change Log: Platformmer Game
 
+## 04/03/20017: Andrew
+* Since last Log:
+  * Created input manager
+  * Created resource manager
+  * Restructured the Font and made sure it rendered correctly
+  * Created a Game object for controlling the game infrastructure
+  * Began building an ini parser for inputting game configs
+  * Created a window object
+  * Moved font to graphic folder
+* Completely added mouse movement and mouse click input controls. The game and window now know where the mouse was clicked.
+* Nothing is rendering anymore because of a lack of a rendering system.
+
 ## 19/02/20017: Andrew
 * Added a texture loading object
 * Added a Texture rendering function to make sure the textures work. (They do)

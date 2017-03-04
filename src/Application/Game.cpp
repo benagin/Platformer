@@ -1,6 +1,12 @@
 #include "Game.hpp"
 #include <iostream>
 
+#include "Events/MouseClickEvent.hpp"
+#include "Events/MouseButtonEvent.hpp"
+#include "Events/MouseMovementEvent.hpp"
+#include "Events/WindowResizeEvent.hpp"
+#include "Events/WindowScrollEvent.hpp"
+
 Game::
 Game(): m_window(nullptr), m_state(Menu), m_running(false), 
   m_inputManager(nullptr) {}
@@ -105,10 +111,13 @@ ProcessInput() {
       }
     } break;
     case MouseButton: {
-
+      auto mouseEvent = (MouseClickEvent*) event;
+      auto loc = mouseEvent->Location();
+      std::cout << "Mouse Clicked at: " <<  loc.x << ", " << loc.y << std::endl;
     } break;
     case MouseMovement: {
-
+      auto mouseEvent = (MouseMovementEvent*) event;
+      m_window->SetMouseLocation(mouseEvent->Location());
     } break;
     case WindowResize: {
 
@@ -117,6 +126,7 @@ ProcessInput() {
 
     } break;
   }
+  delete event;
 }
 
 void

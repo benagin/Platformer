@@ -99,6 +99,14 @@ ToggleKey(unsigned int _key) {
 void
 InputManager::
 MouseButtonCallback(GLFWwindow* _window, int _button, int _action, int _mods) {
+  InputManager* manager = InputManager::Get();
+  const auto& loc = manager->GetWindow()->GetMouseLocation();
+  MouseClickEvent* event = new MouseClickEvent(
+    manager->GetWindow(), 
+    static_cast<Mod>(_mods),
+    static_cast<Action>(_action),
+    loc);
+  manager->Push(event);
 }
 
 

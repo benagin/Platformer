@@ -30,6 +30,7 @@ public:
 	GLFWwindow* GlfwWindow() { return m_window; }
 	void PostQuit();
 
+	const glm::dvec2& GetMouseLocation() { return m_mouseLocation; }
 	void SetMouseLocation(const glm::dvec2& _pos);
 
 	void SwapBuffers();
