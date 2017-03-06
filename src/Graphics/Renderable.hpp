@@ -16,31 +16,44 @@
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
+#include <vector>
+
 #include "Texture2d.hpp"
 #include "Shader.hpp"
+#include "Utils/Rect.hpp"
+
+struct VertexData {
+	glm::vec3 m_vertex;
+	glm::vec2 m_uv;
+	float m_tid;
+	unsigned int m_color;
+};
+
+class Renderer;
 
 class Renderable {
 public:
-	Renderable(Texture2d& _tex, const glm::vec3& _loc, const glm::vec2& _size, float _rotation = 0.0f);
+	Renderable(Texture2d* _tex, const glm::vec3& _loc, const glm::vec2& _size, float _rotation = 0.0f);
 
 	virtual ~Renderable() = default;
-
-	virtual void Draw(Shader& _shader) = 0;
 
 	static void Init();
 
 	void SetLocation(const glm::vec3& _loc);
 	void SetRotation(float _rot);
-
-
+	const std::vector<glm::vec2>& GetUVs() { return m_uvs; }
+	void Submit(Renderer* _renderer);
+	Texture2d* Texture();
+	const Rect& GetBoundingBox() { return m_bbox; }
+	static const std::vector<glm::vec2>& DefaultUVs();
 protected:
 	glm::vec3 m_location;
 	glm::vec2 m_size;
-
 	float m_rotation;
+	Texture2d* m_texture;
+	Rect m_bbox;
+	std::vector<glm::vec2> m_uvs;
 
-	Texture2d& m_texture;
-	static GLuint VAO;
 };
 
 

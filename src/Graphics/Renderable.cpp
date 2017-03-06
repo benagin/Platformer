@@ -1,14 +1,17 @@
 #include "Renderable.hpp"
+#include "Graphics/Renderer.hpp"
 #include "utils/GLDebug.hpp"
 
-GLuint Renderable::VAO = -1;
-
 Renderable::
-Renderable(Texture2d& _tex, const glm::vec3& _loc,
+Renderable(Texture2d* _tex, const glm::vec3& _loc,
 	const glm::vec2& _size, float _rotation): m_location(_loc),
-	m_size(_size), m_rotation(_rotation), m_texture(_tex) {}
+	m_size(_size), m_rotation(_rotation), m_texture(_tex) {
+  m_bbox = {m_location.x, m_location.y, m_location.x + m_size.x, m_location.y + m_size.y};
+  m_uvs = DefaultUVs();
+}
 
 
+/*
 void
 Renderable::
 Init() {
@@ -37,7 +40,7 @@ Init() {
   glBindVertexArray(0);
   glCheckError();
 }
-
+*/
 
 void 
 Renderable::
@@ -52,3 +55,21 @@ SetRotation(float _rot) {
 	m_rotation = _rot;
 }
 
+void
+Renderable::
+Submit(Renderer* _renderer) {
+  _renderer->Submit(this);
+}
+
+const std::vector<glm::vec2>& 
+Renderable::
+DefaultUVs() {
+  static std::vector<glm::vec2> uvs;
+  if(!uvs.size()) {
+    uvs.push_back(glm::vec2(0, 1));
+    uvs.push_back(glm::vec2(1, 1));
+    uvs.push_back(glm::vec2(1, 0));
+    uvs.push_back(glm::vec2(0, 0));
+  }
+  return uvs;
+}
