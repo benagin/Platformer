@@ -10,7 +10,7 @@ Location() {
   return m_location;
 }
 
-Mod 
+Mod
 MouseClickEvent::
 GetMod() {
   return m_mod;
@@ -19,5 +19,5 @@ GetMod() {
 Action
 MouseClickEvent::
 GetAction() {
- return m_action; 
+ return m_action;
 }
