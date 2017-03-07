@@ -27,6 +27,7 @@ public:
   Shader* GetShader(const string& _name);  
   static Resources* Get();
   static Resources* Init(const string& _file);
+  static Font* GetFont();
 private:
   map<string, Font*> m_fonts;
   map<string, Texture2d*> m_textures;

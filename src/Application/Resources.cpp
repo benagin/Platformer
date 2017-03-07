@@ -130,3 +130,9 @@ Init(const string& _file) {
 	}
   return rsc;
 }
+
+Font* 
+Resources::
+GetFont() {
+  return m_instance->m_fonts.begin()->second;
+}
