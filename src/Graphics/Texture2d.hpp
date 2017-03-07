@@ -61,8 +61,8 @@ class Texture2d {
     unsigned int m_texture;         ///< Opengl texture id
     int m_width;                    ///< Width of the image
     int m_height;                   ///< Height of the image.
-    unsigned int m_unit;
     bool m_loaded;                  ///< Says whether a texture is loaded intot he buffer
+    unsigned int m_unit;
     unsigned int* m_data;           ///< Raw texture data.
     static unsigned int m_nextId;   ///< used the next id
 };

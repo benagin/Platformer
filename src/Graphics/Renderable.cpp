@@ -73,3 +73,9 @@ DefaultUVs() {
   }
   return uvs;
 }
+
+Texture2d*
+Renderable::
+Texture() {
+  return m_texture;
+}

@@ -13,6 +13,7 @@ Graphics/Renderable.o: Graphics/Renderable.cpp Graphics/Renderable.hpp \
  /usr/local/Cellar/freetype/2.7/include/freetype2/freetype/fterrors.h \
  /usr/local/Cellar/freetype/2.7/include/freetype2/freetype/ftmoderr.h \
  /usr/local/Cellar/freetype/2.7/include/freetype2/freetype/fterrdef.h \
- Utils/TextureLoader.hpp graphics/Texture2d.hpp Graphics/Font.hpp \
+ Utils/TextureLoader.hpp graphics/Texture2d.hpp Graphics/Texture2d.hpp \
+ Graphics/Font.hpp Graphics/Shader.hpp Graphics/Font.hpp \
  Utils/MatrixStack.h Graphics/Renderable.hpp Graphics/Shader.hpp \
  utils/GLDebug.hpp

@@ -30,7 +30,7 @@ operator= (const Texture2d& _tex) {
 void
 Texture2d::
 Bind(GLuint _handle) const {
-    glActiveTexture(GL_TEXTURE0 + m_unit)
+    glActiveTexture(GL_TEXTURE0 + m_unit);
     glBindTexture(GL_TEXTURE_2D, m_texture);
     glUniform1i(_handle, m_unit);
 }
@@ -38,7 +38,7 @@ Bind(GLuint _handle) const {
 
 void
 Texture2d::
-Unbind(GLuint _handle) const {
-    glActiveTexture(GL_TEXTURE0 + m_unit)
+Unbind() const {
+    glActiveTexture(GL_TEXTURE0 + m_unit);
     glBindTexture(GL_TEXTURE_2D, 0);
 }

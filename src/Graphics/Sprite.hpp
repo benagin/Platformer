@@ -3,11 +3,10 @@
 
 #include "Texture2d.hpp"
 
-class Sprite {
+class Sprite : public Texture2d{
 	public:
 		Sprite();
 	private:
-
 };
 
 #endif // SPRITE_HPP_
