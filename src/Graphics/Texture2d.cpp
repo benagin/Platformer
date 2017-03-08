@@ -1,9 +1,9 @@
 #include "Texture2d.hpp"
-#include "utils/GLDebug.hpp"
+
 unsigned int Texture2d::m_nextId = 0;
 
 Texture2d::
-Texture2d(GLuint _gltex, int _width, int _height, unsigned int* _data): m_uid(m_nextId++), 
+Texture2d(GLuint _gltex, int _width, int _height, unsigned int* _data): m_uid(m_nextId++),
     m_texture(_gltex), m_width(_width), m_height(_height), m_loaded(_data != nullptr), m_unit(0) {}
 
 Texture2d::

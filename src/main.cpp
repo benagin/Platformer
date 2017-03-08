@@ -15,10 +15,10 @@
 #include "Graphics/Font.hpp"
 
 
-#include "Utils/FontLoader.hpp"
-#include "Utils/GLDebug.hpp"
-#include "Utils/TextureLoader.hpp"
-#include "Utils/GameConfig.hpp"
+#include "Utilities/FontLoader.hpp"
+#include "Utilities/GLDebug.hpp"
+#include "Utilities/TextureLoader.hpp"
+#include "Utilities/GameConfig.hpp"
 
 
 
@@ -92,25 +92,25 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
         else
           loc.x -= speed;
 
-        break; 
+        break;
       case GLFW_KEY_D:
         if(loc.x >= (WIDTH - ( size.x)))
           loc.x = 0;
         else
           loc.x += speed;
-        break; 
+        break;
       case GLFW_KEY_W:
         if(loc.y <= 0)
           loc.y = HEIGHT - ( size.y);
         else
           loc.y -= speed;
-        break; 
+        break;
       case GLFW_KEY_S:
         if(loc.y >= HEIGHT - ( size.y))
           loc.y = 0;
         else
           loc.y += speed;
-        break; 
+        break;
     }
   }
 }
@@ -145,7 +145,7 @@ init() {
       "../assets/shaders/sprite.frag");
 
   glm::mat4 p = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT);
-  glm::mat4 projection = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f); 
+  glm::mat4 projection = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f);
   shader->AddUniform("projection");
   shader->AddUniform("textColor");
 
@@ -170,7 +170,7 @@ init() {
     std::cout << "Error: Textures: Texture Failed to load" << std::endl;
     exit(1);
   }
-  // loading the font 
+  // loading the font
   font = fontLoader.Load("../assets/fonts/Roboto-Light.ttf", 48);
 
   if(!font) {
@@ -273,7 +273,7 @@ main() {
 
 
   game = new Game();
-  game->Init(); 
+  game->Init();
   GameConfig config("../config/game_config.ini");
 
   // Set error callback.
@@ -282,7 +282,7 @@ main() {
   // window = Window::Init(Windowed);
   // HEIGHT = window->GetHeight();
   // WIDTH = window->GetWidth();
-  // window->Init(); 
+  // window->Init();
 
   // Initialize GLEW.
   // glew_init();
