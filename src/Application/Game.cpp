@@ -7,6 +7,7 @@
 #include "Events/WindowResizeEvent.hpp"
 #include "Events/WindowScrollEvent.hpp"
 
+
 Game::
 Game(): m_window(nullptr), m_state(Menu), m_running(false),
   m_inputManager(nullptr) {}
@@ -52,6 +53,33 @@ Render() {
   glfwGetFramebufferSize(m_window->GlfwWindow(), &width, &height);
   m_camera.SetAspect((float) width/(float) height);
 
+  switch(m_state) {
+      case Menu:
+        RenderMenu();
+        break;
+
+      case Gameplay:
+        RenderGame();
+        break;
+
+      case GameOver:
+        RenderGameOver();
+        break;
+    }
+}
+
+
+void
+Game::
+RenderMenu() {
+  // Draw menu GUI.
+  //m_menu.Draw(s);
+}
+
+
+void
+Game::
+RenderGame() {
   // Matrix stacks
   MatrixStack P;
   MatrixStack MV;
@@ -64,6 +92,13 @@ Render() {
 
   P.popMatrix();
   MV.popMatrix();
+}
+
+
+void
+Game::
+RenderGameOver() {
+
 }
 
 
@@ -104,7 +139,9 @@ Game::
 Run() {
   while(!m_window->ShouldClose()) {
     Update();
+
     Render();
+
     m_window->PollEvents();
   }
 }
