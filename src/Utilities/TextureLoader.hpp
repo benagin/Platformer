@@ -16,15 +16,11 @@
 
 #include "Graphics/Texture2d.hpp"
 
-extern "C" {
-	#define STB_IMAGE_IMPLEMENTATION
-	#include "Utilities/stb_image.h"
-}
 
 class TextureLoader {
 
 public:
-	/////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
 	/// @name Constructors and Destructors
 	/// @{
 

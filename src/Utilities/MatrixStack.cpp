@@ -1,4 +1,4 @@
-#include "MatrixStack.h"
+#include "MatrixStack.hpp"
 
 #include <stdio.h>
 #include <cassert>

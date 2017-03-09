@@ -12,6 +12,7 @@
 
 InputManager* InputManager::m_instance = nullptr;
 
+
 InputManager::
 InputManager(Game* _game): m_game(_game) {
   if(m_instance) {
@@ -22,16 +23,18 @@ InputManager(Game* _game): m_game(_game) {
   m_instance = this;
 }
 
+
 Window*
 InputManager::
 GetWindow() {
   return m_game->GetWindow();
 }
 
+
 void
 InputManager::
 Push(Event* _event) {
-	m_eventQueue.push(_event);
+  m_eventQueue.push(_event);
 }
 
 
@@ -41,11 +44,13 @@ Top() {
   return m_eventQueue.front();
 }
 
+
 void
 InputManager::
 Pop() {
   m_eventQueue.pop();
 }
+
 
 bool
 InputManager::
@@ -71,9 +76,8 @@ Init() {
 InputManager*
 InputManager::
 Get() {
-	return m_instance;
+  return m_instance;
 }
-
 
 
 // Input Call backs
@@ -81,15 +85,16 @@ void
 InputManager::
 KeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods) {
   InputManager* manager = InputManager::Get();
-  std::cout << "Key Call back " << _key << std::endl;  
-  KeyEvent* input = new KeyEvent(manager->GetWindow(), 
-    static_cast<Key>(_key),
-    static_cast<Mod>(_mods),
-    static_cast<Action>(_action));
+  std::cout << "Key Call back " << _key << std::endl;
+  KeyEvent* input = new KeyEvent(manager->GetWindow(),
+      static_cast<Key>(_key),
+      static_cast<Mod>(_mods),
+      static_cast<Action>(_action));
   manager->Push(input);
 }
 
-void 
+
+void
 InputManager::
 ToggleKey(unsigned int _key) {
   m_game->ToggleKey(_key);
@@ -102,10 +107,10 @@ MouseButtonCallback(GLFWwindow* _window, int _button, int _action, int _mods) {
   InputManager* manager = InputManager::Get();
   const auto& loc = manager->GetWindow()->GetMouseLocation();
   MouseClickEvent* event = new MouseClickEvent(
-    manager->GetWindow(), 
-    static_cast<Mod>(_mods),
-    static_cast<Action>(_action),
-    loc);
+      manager->GetWindow(),
+      static_cast<Mod>(_mods),
+      static_cast<Action>(_action),
+      loc);
   manager->Push(event);
 }
 

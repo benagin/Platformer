@@ -1,5 +1,10 @@
 #include "TextureLoader.hpp"
 
+extern "C" {
+	#define STB_IMAGE_IMPLEMENTATION
+	#include "Utilities/stb_image.h"
+}
+
 /*
 #include <IL/il.h>
 #include <IL/ilu.h>

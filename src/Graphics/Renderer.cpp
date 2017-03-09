@@ -3,6 +3,7 @@
 #include "Renderer.hpp"
 #include "Application/Resources.hpp"
 
+
 Renderer::
 Renderer(const glm::ivec2& _bufferSize) {
   m_textureShader = nullptr;
@@ -14,7 +15,8 @@ Renderer(const glm::ivec2& _bufferSize) {
   SetScreenSize(_bufferSize);
 }
 
-void 
+
+void
 Renderer::
 Init() {
   m_matrixStack = new MatrixStack;
@@ -47,11 +49,11 @@ Init() {
     indices[i + 5] = offset + 5;
     offset += 4;
   }
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
     MAX_INDICE_SIZE * sizeof(GLuint),
     indices, GL_STATIC_DRAW);
 
-  
+
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -63,11 +65,11 @@ Init() {
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset, 0);
   offset += sizeof(float) * 3;
-  
+
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
   offset += sizeof(float) * 2;
-  
+
 
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, 0);
@@ -79,14 +81,15 @@ Init() {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void 
+
+void
 Renderer::
 Submit(Renderable* _renderable) {
   const auto& bbox = _renderable->GetBoundingBox();
 
   const auto& min = bbox.GetLowerBounds();
   const auto& max = bbox.GetUpperBounds();
-  
+
   Texture2d* texture = _renderable->Texture();
   const std::vector<glm::vec2>& uvs = _renderable->GetUVs();
 
@@ -101,7 +104,7 @@ Submit(Renderable* _renderable) {
   m_vertexData->m_tid = slot;
   m_vertexData->m_color = 0xffffffff;
   m_vertexData++;
-  
+
   vertex = m_matrixStack->topMatrix() * glm::vec4(max.x, min.y, 0.0, 0.0);
   m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
   m_vertexData->m_uv = uvs[1];
@@ -123,10 +126,11 @@ Submit(Renderable* _renderable) {
   m_vertexData->m_color = 0xffffffff;
   m_vertexData++;
 
-  m_indexSize += 6; 
+  m_indexSize += 6;
 }
 
-void 
+
+void
 Renderer::
 Present() {
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
@@ -138,74 +142,88 @@ Present() {
   // reinitialize the the index buffer
   m_vertexData = m_vertexHead;
   m_indexSize = 0;
-  
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void 
+
+void
 Renderer::
 DrawString(const std::string& _text, float _x, float _y, const Font& _font, unsigned int _color) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawLine(float _x0, float _y0, float _x1, float _y1, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawLine(const glm::vec2& _start, const glm::vec2& _end, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(float _x, float _y, float _width, float _height, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(const glm::vec2& _location, const glm::vec2& _size, unsigned int _color, float _thickness) {
 
 }
+
+
 void
 Renderer::
 DrawRect(const Rect& _rect, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(const Rectangle& _rect, unsigned int _color, float _thickness) {
 
 }
 
 
-void 
+void
 Renderer::
 FillRect(float _x, float _y, float _width, float _height, unsigned int _color) {
 
 }
-void 
+
+
+void
 Renderer::
 FillRect(const glm::vec2& _location, const glm::vec2& _size, unsigned int _color) {
 
 }
 
-void 
+
+void
 Renderer::
 FillRect(const Rect& _rect, unsigned int _color) {
 
 }
-void 
+
+
+void
 Renderer::
 FillRect(const Rectangle& _rect, unsigned int _color) {
 
 }
+
 
 void
 Renderer::
@@ -214,10 +232,11 @@ SetScreenSize(const glm::ivec2& _bufferSize) {
   glViewport(0, 0 , m_bufferSize.x, m_bufferSize.y);
 }
 
+
 float
 Renderer::
 SubmitTexture(Texture2d* _texture) {
-  float result = 0.0f; 
+  float result = 0.0f;
   bool found = false;
   for(size_t i = 0; i < m_textures.size(); ++i) {
     if(m_textures[i] == _texture) {

@@ -8,11 +8,13 @@
 #include "Events/WindowScrollEvent.hpp"
 
 Game::
-Game(): m_window(nullptr), m_state(Menu), m_running(false), 
+Game(): m_window(nullptr), m_state(Menu), m_running(false),
   m_inputManager(nullptr) {}
+
 
 Game::
 ~Game() {}
+
 
 void
 Game::
@@ -25,6 +27,11 @@ Init() {
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
   m_running = true;
+
+  m_camera.SetInitDistance(2.);
+
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glEnable(GL_DEPTH_TEST);
 }
 
 
@@ -34,10 +41,31 @@ Update() {
   ProcessInput();
 }
 
+
 void
 Game::
 Render() {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  // Reset camera aspect if window size changes.
+  int width, height;
+  glfwGetFramebufferSize(m_window->GlfwWindow(), &width, &height);
+  m_camera.SetAspect((float) width/(float) height);
+
+  // Matrix stacks
+  MatrixStack P;
+  MatrixStack MV;
+
+  // Apply camera transforms.
+  P.pushMatrix();
+  m_camera.ApplyProjectionMatrix(P);
+  MV.pushMatrix();
+  m_camera.ApplyViewMatrix(MV);
+
+  P.popMatrix();
+  MV.popMatrix();
 }
+
 
 void
 Game::
@@ -48,13 +76,12 @@ InitGL() {
   // NOTE(ANDREW): 17/02/2017
   // This is setting the version of open gl that we are using
   // In this case it is being set to version 3.3
-  // This will be moved out of main at some point.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
- 
 }
+
 
 void
 Game::
@@ -71,6 +98,7 @@ InitGlew() {
     << std::endl;
 }
 
+
 void
 Game::
 Run() {
@@ -81,17 +109,20 @@ Run() {
   }
 }
 
-void 
+
+void
 Game::
 ToggleKey(unsigned int _key) {
   m_keys[_key] = !m_keys[_key];
 }
+
 
 void
 Game::
 SetCursor(const glm::dvec2& _pos) {
   m_window->SetMouseLocation(_pos);
 }
+
 
 void
 Game::
@@ -114,6 +145,9 @@ ProcessInput() {
       auto mouseEvent = (MouseClickEvent*) event;
       auto loc = mouseEvent->Location();
       std::cout << "Mouse Clicked at: " <<  loc.x << ", " << loc.y << std::endl;
+      if(m_state == Menu) {
+
+      }
     } break;
     case MouseMovement: {
       auto mouseEvent = (MouseMovementEvent*) event;
@@ -128,6 +162,7 @@ ProcessInput() {
   }
   delete event;
 }
+
 
 void
 Game::

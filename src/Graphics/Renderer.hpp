@@ -9,7 +9,7 @@
 
 #include "Application/Resources.hpp"
 #include "Font.hpp"
-#include "Utilities/MatrixStack.h"
+#include "Utilities/MatrixStack.hpp"
 #include "Utilities/Rect.hpp"
 #include "Renderable.hpp"
 #include "Shader.hpp"

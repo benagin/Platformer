@@ -3,7 +3,9 @@
 
 #include <glm/glm.hpp>
 
+#include "Utilities/MatrixStack.hpp"
 #include "Graphics/UI/Window.hpp"
+#include "Graphics/Camera.hpp"
 #include "InputManager.hpp"
 #include "Resources.hpp"
 
@@ -21,7 +23,7 @@ class Game {
 
     enum State {
       Menu,
-      ActiveGame,
+      Gameplay,
       GameOver
     };
 
@@ -35,13 +37,17 @@ class Game {
     static void InitGL();
     static void InitGlew();
 
-    State GetState() const { return m_state; }
-
   private:
 
     void ProcessInput();
     void QuitGame();
+
+    MatrixStack m_matrixStack;
+
     Window* m_window;
+
+    Camera m_camera;
+
     State m_state;
     bool m_running;
     // Once it is finished
