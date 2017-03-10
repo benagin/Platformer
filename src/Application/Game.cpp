@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Events/MouseClickEvent.hpp"
 #include "Events/MouseButtonEvent.hpp"
@@ -25,6 +26,25 @@ Init() {
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
   m_running = true;
+  
+  m_camera = new Camera(glm::ortho(-16.0f, 16.0f, -9.0f, 
+    9.0f, -1.0f, 1.0f));
+    
+  m_renderer = new Renderer(
+    glm::ivec2(
+      m_window->GetWidth(),
+      m_window->GetHeight()
+      )
+    );
+  m_renderer->SetCamera(m_camera);
+  m_renderer->Init();
+  
+
+  Entity* temp = new Entity(
+    m_resources->GetTexture("person"),
+    glm::vec3(10,10,0),
+    glm::vec2(1,1)); 
+  m_entities.push_back(temp);
 }
 
 
@@ -37,6 +57,13 @@ Update() {
 void
 Game::
 Render() {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  m_renderer->Begin();
+  for(auto e : m_entities) {
+    m_renderer->Submit(e);
+  }
+  m_renderer->Present();
+  m_renderer->End();
 }
 
 void
@@ -53,7 +80,6 @@ InitGL() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
- 
 }
 
 void
@@ -65,6 +91,8 @@ InitGlew() {
     exit(1);
   }
   glGetError();
+  glEnable(GL_DEPTH_TEST);
+  glClearColor(1.0,1.0,1.0,1.0);
 
   std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
   std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION)

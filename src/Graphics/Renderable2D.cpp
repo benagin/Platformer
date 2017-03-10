@@ -1,9 +1,9 @@
-#include "Renderable.hpp"
-#include "Graphics/Renderer.hpp"
+#include "Renderable2D.hpp"
+#include "Graphics/Renderer2D.hpp"
 #include "utils/GLDebug.hpp"
 
-Renderable::
-Renderable(Texture2d* _tex, const glm::vec3& _loc,
+Renderable2D::
+Renderable2D(Texture2D* _tex, const glm::vec3& _loc,
 	const glm::vec2& _size, float _rotation): m_location(_loc),
 	m_size(_size), m_rotation(_rotation), m_texture(_tex) {
   m_bbox = {m_location.x, m_location.y, m_location.x + m_size.x, m_location.y + m_size.y};
@@ -13,7 +13,7 @@ Renderable(Texture2d* _tex, const glm::vec3& _loc,
 
 /*
 void
-Renderable::
+Renderable2D::
 Init() {
 	GLuint spriteVBO;
 	GLfloat vertices[] = { 
@@ -43,26 +43,26 @@ Init() {
 */
 
 void 
-Renderable::
+Renderable2D::
 SetLocation(const glm::vec3& _loc) {
 	m_location = _loc;
 }
 
 
 void 
-Renderable::
+Renderable2D::
 SetRotation(float _rot) {
 	m_rotation = _rot;
 }
 
 void
-Renderable::
+Renderable2D::
 Submit(Renderer* _renderer) {
   _renderer->Submit(this);
 }
 
 const std::vector<glm::vec2>& 
-Renderable::
+Renderable2D::
 DefaultUVs() {
   static std::vector<glm::vec2> uvs;
   if(!uvs.size()) {
@@ -74,8 +74,8 @@ DefaultUVs() {
   return uvs;
 }
 
-Texture2d*
-Renderable::
+Texture2D*
+Renderable2D::
 Texture() {
   return m_texture;
 }

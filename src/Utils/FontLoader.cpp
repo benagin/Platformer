@@ -46,7 +46,7 @@ LoadCharacters(FT_Face& _face, Font* _font) {
     // Store character.
     Font::Glyph character(texture, glm::ivec2(bitmap.width, bitmap.rows),
       glm::ivec2(glyph->bitmap_left, glyph->bitmap_top),
-      static_cast<GLuint>(glyph->advance.x));
+      static_cast<GLuint>(glyph->advance.x), (unsigned int*) glyph->bitmap.buffer);
 
     _font->AddGlyph(c, character);
   }

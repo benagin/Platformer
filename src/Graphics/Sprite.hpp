@@ -1,9 +1,9 @@
 #ifndef SPRITE_HPP_
 #define SPRITE_HPP_
 
-#include "Texture2d.hpp"
+#include "Texture2D.hpp"
 
-class Sprite : public Texture2d{
+class Sprite : public Texture2D{
 	public:
 		Sprite();
 	private:

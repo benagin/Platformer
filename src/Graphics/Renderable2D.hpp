@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-/// @name Renderable
+/// @name Renderable2D
 /// @group NA
 /// @Author Andrew Bregger 19/02/2017
 ///
@@ -10,15 +10,15 @@
 ///
 /// 				For now, I'm storing the texture
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef RENDERABLE_HPP_
-#define RENDERABLE_HPP_
+#ifndef Renderable2D_HPP_
+#define Renderable2D_HPP_
 
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "Texture2d.hpp"
+#include "Texture2D.hpp"
 #include "Shader.hpp"
 #include "Utils/Rect.hpp"
 
@@ -31,11 +31,11 @@ struct VertexData {
 
 class Renderer;
 
-class Renderable {
+class Renderable2D {
 public:
-	Renderable(Texture2d* _tex, const glm::vec3& _loc, const glm::vec2& _size, float _rotation = 0.0f);
+	Renderable2D(Texture2D* _tex, const glm::vec3& _loc, const glm::vec2& _size, float _rotation = 0.0f);
 
-	virtual ~Renderable() = default;
+	virtual ~Renderable2D() = default;
 
 	static void Init();
 
@@ -43,14 +43,14 @@ public:
 	void SetRotation(float _rot);
 	const std::vector<glm::vec2>& GetUVs() { return m_uvs; }
 	void Submit(Renderer* _renderer);
-	Texture2d* Texture();
+	Texture2D* Texture();
 	const Rect& GetBoundingBox() { return m_bbox; }
 	static const std::vector<glm::vec2>& DefaultUVs();
 protected:
 	glm::vec3 m_location;
 	glm::vec2 m_size;
 	float m_rotation;
-	Texture2d* m_texture;
+	Texture2D* m_texture;
 	Rect m_bbox;
 	std::vector<glm::vec2> m_uvs;
 

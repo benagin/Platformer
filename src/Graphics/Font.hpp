@@ -12,6 +12,7 @@
 
 #include <map>
 #include <string>
+#include "Texture2D.hpp"
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -23,33 +24,20 @@ class Font {
 
   public:
 
-    class Glyph {
+    class Glyph : public Texture2D {
 
       public:
         ///////////////////////////////////////////////////////////////////////////
         /// @brief Representation of a single Glyph, ie. character
         Glyph(GLuint _tex, const glm::ivec2& _size,
-            int _adv, int _stride);
-
-
-        Glyph(GLuint _tex, const glm::ivec2& _size,
-            const glm::ivec2& _bearing, int _adv);
-
-        int GetStride() { return m_stride; }
+            const glm::ivec2& _bearing, int _adv, unsigned int* _data);
+            
         int GetAdvance() { return m_advance; }
-        float GetWidth() { return m_size.x; }
-        float GetHeight() { return m_size.y; }
         float GetBearingX() { return m_bearing.x; }
         float GetBearingY() { return m_bearing.y; }
-        GLuint GetTexture() { return m_textureId; }
-
       private:
-
-        GLuint m_textureId;   ///< the opengl texture id
-        glm::ivec2 m_size;    ///< the width and height of the texture
         glm::ivec2 m_bearing; ///< x and y bearing of the glyph
         int m_advance;        ///< the distance in the x until the next character
-        int m_stride; 	      ///< X bearing
     };
 
     /////////////////////////////////////////////////////////////////////////////

@@ -17,14 +17,14 @@ SRC_DIR ?= .
 # Compiler Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 CXX 	 = g++
-CXXFLAGS = -std=c++11 -Wall -Werror -pedantic -g
+CXXFLAGS = -std=c++11 -Wall -Werror -pedantic
 
 ifeq ($(debug), 1)
-	CXXFLAGS += -g
+	CXXFLAGS += -g -DPLAT_DEBUG
 endif
 
 FRMWRKS  = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
-LIBS     = -lglfw -lglew -lfreetype -lIL -lILUT -lILU
+LIBS     = -lglfw -lglew -lfreetype
 
 INC_DIRS = -I$(FTYPE_INC_DIR) -I./
 LIB_DIRS = -L$(FTYPE_LINK_DIR)

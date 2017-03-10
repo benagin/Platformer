@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-/// @name Texture2d
+/// @name Texture2D
 /// @group NA
 /// @Author Andrew Bregger 18/02/2017
 ///
@@ -11,8 +11,8 @@
 #include <GL/glew.h>
 #include <string>
 
-/// @brief Texture2d representation.
-class Texture2d {
+/// @brief Texture2D representation.
+class Texture2D {
 
     public:
         /////////////////////////////////////////////////////////////////////////////
@@ -24,20 +24,20 @@ class Texture2d {
         /// @param _width The width of the texture
         /// @param _height The height of the textre
         /// @param _data The data of the texture.
-        Texture2d(GLuint _gltex, int _width, int _height, unsigned int* _data);
+        Texture2D(GLuint _gltex, int _width, int _height, unsigned int* _data);
 
         /// @brief Copy Constrcutor
-        Texture2d(const Texture2d& _tex);
+        Texture2D(const Texture2D& _tex);
 
         /// @brief Copy operator
-        Texture2d operator= (const Texture2d& _tex);
+        Texture2D operator= (const Texture2D& _tex);
 
         /// @}
         /// @name Operators
         /// @{
 
         /// @brief Binds the texture to the current texture object.
-        void Bind(GLuint _handle) const;
+        void Bind() const;
 
         /// @brief Binds the texture to the current texture object.
         void Unbind() const;

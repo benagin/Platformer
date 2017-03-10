@@ -10,10 +10,10 @@ in DATA {
     vec4 color;
 } fs_in;
 
-uniform sampler2D textures[32];
+uniform sampler2D textures[16];
 
 void main() {    
     vec4 texColor = fs_in.color;
-    int tid = int(fs_in - 0.5);
+    int tid = int(fs_in.tid - 0.5);
     texColor = fs_in.color * texture(textures[tid], fs_in.uv);
 }

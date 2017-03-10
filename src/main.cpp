@@ -10,7 +10,7 @@
 #include "Entities/Entity.hpp"
 
 #include "Graphics/Shader.hpp"
-#include "Graphics/Texture2d.hpp"
+#include "Graphics/Texture2D.hpp"
 #include "Graphics/ui/Window.hpp"
 #include "Graphics/Font.hpp"
 
@@ -33,7 +33,7 @@ std::shared_ptr<Shader> shader;
 std::shared_ptr<Shader> sprite_shader;
 GLuint VBO, VAO;
 
-Texture2d* texture;
+Texture2D* texture;
 TextureLoader loader;
 
 std::shared_ptr<Entity> entity;
@@ -195,7 +195,7 @@ init() {
   glBindVertexArray(0);
   glCheckError();
 
-  Renderable::Init();
+  Renderable2D::Init();
 
 }
 */

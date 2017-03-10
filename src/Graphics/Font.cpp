@@ -5,13 +5,8 @@
 #include <sstream>
 
 Font::Glyph::
-Glyph(GLuint _tex, const glm::ivec2& _size, int _adv, int _stride) :
-  m_textureId(_tex), m_size(_size), m_advance(_adv), m_stride(_stride) {}
-
-Font::Glyph::
-Glyph(GLuint _tex, const glm::ivec2& _size, const glm::ivec2& _bearing,
-    int _adv) : m_textureId(_tex), m_size(_size), m_bearing(_bearing),
-    m_advance(_adv), m_stride(0) {}
+Glyph(GLuint _tex, const glm::ivec2& _size, const glm::ivec2& _bearing, int _adv, unsigned int* _data) :
+  Texture2D(_tex, _size.x, _size.y, _data), m_bearing(_bearing), m_advance(_adv) {}
 
 Font::
 Font(const std::string& _filename, int _height): m_height(_height) {

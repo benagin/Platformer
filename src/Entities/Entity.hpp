@@ -1,6 +1,6 @@
 #ifndef ENTITY_HPP_
 #define ENTITY_HPP_
-#include "graphics/Renderable.hpp"
+#include "graphics/Renderable2D.hpp"
 #include <glm/glm.hpp>
 
 // this might not be necissary.
@@ -12,9 +12,9 @@ enum Entity_Type {
 };
 
 
-class Entity : public Renderable {
+class Entity : public Renderable2D {
   public:
-    Entity(Texture2d* _tex, const glm::vec3& _loc,
+    Entity(Texture2D* _tex, const glm::vec3& _loc,
       const glm::vec2& _size, float _rotation = 0.0f, Entity_Type _type = Basic);
   private:
     Entity_Type m_type;

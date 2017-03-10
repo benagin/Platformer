@@ -1,7 +1,11 @@
 #include <GL/glew.h>
 
-#include "Renderer.hpp"
+#include "Renderer2D.hpp"
 #include "Application/Resources.hpp"
+#include "Utils/GLDebug.hpp"
+
+#include <iostream>
+using namespace std;
 
 Renderer::
 Renderer(const glm::ivec2& _bufferSize) {
@@ -17,26 +21,79 @@ Renderer(const glm::ivec2& _bufferSize) {
 void 
 Renderer::
 Init() {
+
+  cout << "Initializing Renderer" << endl;
+
+  cout << "Initializing Shader:\nAttributes\nUniforms\n";
+
+  // create a new matrix stack
   m_matrixStack = new MatrixStack;
+  
+  // pushing an identity matrix onto stack
   m_matrixStack->pushMatrix();
+
+  // getting the sprite shader from resouces
   m_textureShader = Resources::Get()->GetShader("sprite");
+
+  m_textureShader->Bind();
+  // Setting attributes and unifomrs
   m_textureShader->AddAttribute("position");
   m_textureShader->AddAttribute("uv");
   m_textureShader->AddAttribute("tid");
   m_textureShader->AddAttribute("color");
 
-  m_textureShader->AddUniform("perspective");
-  m_textureShader->AddUniform("transform");
+  m_textureShader->AddUniform("projection");
+  m_textureShader->AddUniform("textures");
 
+  m_textureShader->Unbind();
+
+  // getting the text shader, The sprite shader might be used to render this.
   m_textShader = Resources::Get()->GetShader("text");
-  m_vertexData = new VertexData[MAX_TEXTURE_SIZE];
-  m_vertexHead = m_vertexData;
-  glGenBuffers(1, &m_indexBuffer);
-  glGenBuffers(1, &m_vertexArray);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+  cout << "Shader Complete\n";
 
-  GLuint* indices = new GLuint[MAX_INDICE_SIZE];
+  // Stored the indices for textures
+  cout << "Generating Buffers" << endl;
+
+  VertexBuffer* buffer = new VertexBuffer(MAX_BUFFER_SIZE, Usage::DynamicDraw);
+  buffer->Resize(MAX_BUFFER_SIZE); // I know this is redundant 
+
+  m_vertexArray = new VertexArray;
+
+  // getting the data from the buffer 
+  cout << "Setting up Vertex Attributes" << endl;
+  
   GLuint offset = 0;
+  m_vertexArray->Bind();
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset, 0);
+  glCheckError();
+
+  offset += sizeof(float) * 3;
+  
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
+  glCheckError();
+  
+  offset += sizeof(float) * 2;
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, 0);
+  glCheckError();
+
+  offset += sizeof(float);
+
+  glEnableVertexAttribArray(3);
+  glCheckError();
+  glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, offset, 0);
+  cout << "Finished Vertex Attributes" << endl;
+
+  m_vertexArray->AddBuffer(buffer);
+
+  // setting up the indices.
+  cout << "Initiallizing Indicies" << endl;
+  
+  GLuint* indices = new GLuint[MAX_INDICE_SIZE];
+  offset = 0;
   for(unsigned i = 0; i < MAX_INDICE_SIZE;i += 6) {
     indices[i] = offset + 0;
     indices[i + 1] = offset + 1;
@@ -47,48 +104,25 @@ Init() {
     indices[i + 5] = offset + 5;
     offset += 4;
   }
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-    MAX_INDICE_SIZE * sizeof(GLuint),
-    indices, GL_STATIC_DRAW);
 
+  m_indexBuffer = new IndexBuffer(indices, MAX_INDICE_SIZE);
+
+  m_vertexArray->Unbind();
+  m_textureShader->Unbind();
   
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-  // setting up the attributes of the vertex data.
-  glBindBuffer(GL_ARRAY_BUFFER, m_vertexArray);
-
-  // Location Attribute Offset
-  offset = 0;
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset, 0);
-  offset += sizeof(float) * 3;
-  
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
-  offset += sizeof(float) * 2;
-  
-
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, 0);
-  offset += sizeof(float);
-
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, offset, 0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  cout << "Initialized Renderer" << endl;
 }
 
 void 
 Renderer::
-Submit(Renderable* _renderable) {
-  const auto& bbox = _renderable->GetBoundingBox();
+Submit(Renderable2D* _Renderable2D) {
+  const auto& bbox = _Renderable2D->GetBoundingBox();
 
   const auto& min = bbox.GetLowerBounds();
   const auto& max = bbox.GetUpperBounds();
-  
-  Texture2d* texture = _renderable->Texture();
-  const std::vector<glm::vec2>& uvs = _renderable->GetUVs();
+
+  Texture2D* texture = _Renderable2D->Texture();
+  const std::vector<glm::vec2>& uvs = _Renderable2D->GetUVs();
 
   float slot = 0.0f;
   if(texture)
@@ -126,21 +160,55 @@ Submit(Renderable* _renderable) {
   m_indexSize += 6; 
 }
 
+void
+Renderer::
+Begin() {
+  m_vertexArray->Bind();
+  glCheckError();
+  m_vertexData = (VertexData*) m_vertexArray->GetBuffer()->Pointer();
+  glCheckError();
+}
+
 void 
 Renderer::
 Present() {
-  //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, m_vertexArray);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-  // Draw
-  glDrawElements(GL_TRIANGLES, m_indexSize, GL_UNSIGNED_INT, (void*)0);
+  // set shader values
+  m_textureShader->Bind();
+  m_textureShader->SetMatrix4("projection", m_camera->GetProjection());
 
-  // reinitialize the the index buffer
-  m_vertexData = m_vertexHead;
+  auto unit = m_textureShader->GetUniform("textures");
+  for(auto i : m_textures) {
+    i->SetUnit(unit);
+    i->Bind();
+    ++unit;
+  }
+
+  m_vertexArray->Bind();
+  m_indexBuffer->Bind();
+
+
+  // Draw
+  m_vertexArray->Draw(m_indexSize);
+  glCheckError();
+
   m_indexSize = 0;
+
+  m_indexBuffer->Unbind();
+  m_vertexArray->Unbind();
+
+  for(auto i : m_textures) {
+    i->Unbind();
+  }
+  m_textures.clear();
   
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  m_textureShader->Unbind();
+}
+
+void
+Renderer::
+End() {
+  m_vertexArray->GetBuffer()->Release();
+  m_vertexArray->Unbind();
 }
 
 void 
@@ -216,7 +284,7 @@ SetScreenSize(const glm::ivec2& _bufferSize) {
 
 float
 Renderer::
-SubmitTexture(Texture2d* _texture) {
+SubmitTexture(Texture2D* _texture) {
   float result = 0.0f; 
   bool found = false;
   for(size_t i = 0; i < m_textures.size(); ++i) {
@@ -229,9 +297,18 @@ SubmitTexture(Texture2d* _texture) {
   if(!found) {
     if(m_textures.size() <= MAX_TEXTURE_SIZE) {
       // present the textures
+      End();
+      Present();
+      Begin();
     }
     m_textures.push_back(_texture);
     result = (float) m_textures.size();
   }
   return result;
+}
+
+void
+Renderer::
+SetCamera(Camera* _camera) {
+  m_camera = _camera;
 }

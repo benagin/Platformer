@@ -2,12 +2,6 @@
 #include <iostream>
 #include <cassert>
 
-/*
-#include <IL/il.h>
-#include <IL/ilu.h>
-#include <IL/ilut.h>
-*/
-
 #include <glm/glm.hpp>
 
 extern "C" {
@@ -15,25 +9,25 @@ extern "C" {
 	#include "Utils/stb_image.h"
 }
 
-Texture2d
+Texture2D
 TextureLoader::
 operator() (const std::string& _filename) {
 	return Load(_filename);
 }
 
 
-Texture2d
+Texture2D
 TextureLoader::
 Load(const std::string& _filename) {
 	/*
 	int x, y, channels;
-	Texture2d tex; // = Texture2d();
+	Texture2D tex; // = Texture2D();
 	unsigned int* data = (unsigned int*) stbi_load(_filename.c_str(), &x, &y, &channels, STBI_rgb_alpha);
 	
 
 	if(!data) {
 		std::cout << stbi_failure_reason() << std::endl;
-		return Texture2d();	
+		return Texture2D();	
 	}
 	
 	if(channels == 4) {
@@ -43,10 +37,10 @@ Load(const std::string& _filename) {
 		
 	tex.Generate(x, y, data);
 	*/
-	return Texture2d(-1, 0, 0, nullptr);
+	return Texture2D(-1, 0, 0, nullptr);
 }
 
-Texture2d* 
+Texture2D* 
 TextureLoader::
 LoadPtr(const std::string& _filename) {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -72,5 +66,5 @@ LoadPtr(const std::string& _filename) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	//stbi_image_free(data);
 
-	return new Texture2d(texture, x, y, (unsigned int*) data);
+	return new Texture2D(texture, x, y, (unsigned int*) data);
 }

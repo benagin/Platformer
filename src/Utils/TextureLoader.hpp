@@ -11,7 +11,7 @@
 
 #include <string>
 
-#include "graphics/Texture2d.hpp"
+#include "graphics/Texture2D.hpp"
 
 
 class TextureLoader {
@@ -30,17 +30,17 @@ public:
 	/// @brief Operator for loading a Texture	
 	/// @param _filename The path name to the image.
 	/// @return The new texture	
-	Texture2d operator() (const std::string& _filename);
+	Texture2D operator() (const std::string& _filename);
 
 	/// @brief Another interface for creating a texture
 	/// @param _filename The path name to the image.
 	/// @return The new texture	
-	Texture2d Load(const std::string& _filename);
+	Texture2D Load(const std::string& _filename);
 
 	/// @brief Another interface for creating a texture
 	/// @param _filename The path name to the image.
 	/// @return The new texture	pointer
-	Texture2d* LoadPtr(const std::string& _filename);
+	Texture2D* LoadPtr(const std::string& _filename);
 	
 	/// @}
 	/// @name Delete Operators and constructors

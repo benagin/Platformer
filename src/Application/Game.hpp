@@ -2,8 +2,12 @@
 #define GAME_HPP_
 
 #include <glm/glm.hpp>
+#include <vector>
 
+#include "Camera/Camera.hpp"
+#include "Entities/Entity.hpp"
 #include "Graphics/UI/Window.hpp"
+#include "Graphics/Renderer2D.hpp"
 #include "InputManager.hpp"
 #include "Resources.hpp"
 
@@ -38,7 +42,7 @@ class Game {
     State GetState() const { return m_state; }
 
   private:
-
+    std::vector<Entity*> m_entities;
     void ProcessInput();
     void QuitGame();
     Window* m_window;
@@ -50,8 +54,10 @@ class Game {
     // Game input states, window related states are
     // stored in the window.
     bool m_keys[Key::NUM_KEYS];
+    Renderer* m_renderer;
     Resources* m_resources;
     InputManager* m_inputManager;
+    Camera* m_camera;
 };
 
 #endif // GAME_HPP_

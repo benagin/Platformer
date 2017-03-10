@@ -25,7 +25,7 @@ AddFont(const string& _name, Font* _font) {
 
 void
 Resources::
-AddTexture(const string& _name, Texture2d* _texture) {
+AddTexture(const string& _name, Texture2D* _texture) {
   m_textures.emplace(_name, _texture);
 }
 
@@ -42,7 +42,7 @@ GetFont(const string& _name) {
   return m_fonts[_name];
 }
 
-Texture2d*
+Texture2D*
 Resources::
 GetTexture(const string& _name) {
   return m_textures[_name];
@@ -99,7 +99,7 @@ Init(const string& _file) {
       ss >> file;
       file = base_path + "textures/" + file;
       std::cout << "Loaded Texture: " << name << " File: " << file << std::endl;
-      Texture2d* t = textureLoader.LoadPtr(file);
+      Texture2D* t = textureLoader.LoadPtr(file);
       rsc->AddTexture(name, t);
     }
     else if(temp == "f") {
