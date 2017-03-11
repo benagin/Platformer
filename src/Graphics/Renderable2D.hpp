@@ -23,14 +23,14 @@
 #include "Utilities/Rect.hpp"
 #include "Utilities/GLDebug.hpp"
 
-/* Moved to renderer.hpp (does that work?)
+
 struct VertexData {
 	glm::vec3 m_vertex;
 	glm::vec2 m_uv;
 	float m_tid;
 	unsigned int m_color;
 };
-*/
+
 
 class Renderer;
 

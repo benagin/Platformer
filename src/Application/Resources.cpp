@@ -1,5 +1,7 @@
 #include "Resources.hpp"
+#include <tinyxml2.h>
 
+using namespace tinyxml2;
 
 Resources* Resources::m_instance = nullptr;
 Resources::
@@ -63,59 +65,68 @@ Get() {
 Resources*
 Resources::
 Init(const string& _file) {
+
   FontLoader fontLoader;
   TextureLoader textureLoader;
-
+  tinyxml2::XMLDocument xmlDoc;
   Resources* rsc = new Resources;
-  std::ifstream r(_file);
-  std::stringstream ss;
-  ss << r.rdbuf();
-  r.close();
+  xmlDoc.LoadFile(_file.c_str());
+  std::string base;
 
-  string temp;
-  string base_path = "./";
-  string name;
+  XMLElement* root = xmlDoc.RootElement();
+  const char* basefile = root->Attribute("basefile");
+  base = std::string(basefile);
 
-  while(ss >> temp) {
-    if(temp == "b") {
-      ss >> base_path;
-    }
-    else if(temp == "s") {
-      // shader
-      ss >> name;
-      string frag, vertex;
-      ss >> vertex;
-      ss >> frag;
-      vertex = base_path + "shaders/" + vertex;
-      frag = base_path + "shaders/" + frag;
-      std::cout << "Loaded Shader: " << name << " vertex: " << vertex << " fragment: " << frag << std::endl;
-      Shader* s = new Shader(vertex, frag);
+  XMLElement* child = root->FirstChild()->ToElement();
+  while(child != nullptr) {
+    std::string title(child->Value());
+    auto name = std::string(child->Attribute("name"));
+    const char* d = child->Attribute("default");
+
+    if(title == "Shader") {
+      std::string path = base + "shaders/";
+      auto vertex = std::string(child->Attribute("vertex"));
+      auto fragment = std::string(child->Attribute("fragment"));
+      std::cout << "Loaded Shader: " << name << "\n";
+      std::cout << "\t" << vertex << std::endl;
+      std::cout << "\t" << fragment << std::endl;
+      Shader* s = new Shader(path + vertex, path + fragment);
       rsc->AddShader(name, s);
     }
-    else if(temp == "t") {
-      // texture
-      ss >> name;
-      string file;
-      ss >> file;
-      file = base_path + "textures/" + file;
-      std::cout << "Loaded Texture: " << name << " File: " << file << std::endl;
-      Texture2D* t = textureLoader.LoadPtr(file);
+    else if(title == "Texture") {
+      std::string path = base + "textures/";
+      auto file = std::string(child->Attribute("file"));
+      std::cout << "Loaded Texture: " << name << "\n";
+      std::cout << "\t" << file << std::endl;
+      Texture2D* t = textureLoader.LoadPtr(path + file);
       rsc->AddTexture(name, t);
     }
-    else if(temp == "f") {
-      // font
-      ss >> name;
-      string file;
-      string size;
-      ss >> file;
-      ss >> size;
-      file = base_path + "fonts/" + file;
-      int s = atoi(size.c_str());
-      std::cout << "Loaded Font: " << name << " File: " << file << " Size: " << size << std::endl;
-      Font* font = fontLoader.Load(file, s);
-      rsc->AddFont(name, font);
+    else if(title == "Font") {
+      std::string path = base + "fonts/";
+      auto file = std::string(child->Attribute("file"));
+      int height = child->IntAttribute("height");
+      std::cout << "Loaded Font: " << name << "\n";
+      std::cout << "\t" << file << std::endl;
+      Font* f = fontLoader.Load(path + file, height);
+      rsc->AddFont(name, f);
     }
+
+    std::cout << "\tDefault: ";
+    if(d) {
+      std::cout << d << std::endl;
+    }
+    else {
+      std::cout << "False\n";
+    }
+    auto t = child->NextSibling();
+    if(t)
+      child = t->ToElement();
+    else
+      child = nullptr;
   }
+
+
+
   return rsc;
 }
 

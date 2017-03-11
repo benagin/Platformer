@@ -6,7 +6,8 @@
 
 #include "Entities/Entity.hpp"
 #include "Graphics/UI/Window.hpp"
-#include "Graphics/Renderer2D.hpp"
+// #include "Graphics/Renderer2D.hpp"
+#include "Graphics/ForwardRenderer2D.hpp"
 #include "Graphics/UI/Window.hpp"
 #include "Graphics/UI/GUI.hpp"
 #include "Graphics/Camera.hpp"
@@ -69,7 +70,7 @@ class Game {
     // Game input states, window related states are
     // stored in the window.
     bool m_keys[Key::NUM_KEYS];
-    Renderer* m_renderer;
+    ForwardRenderer2D* m_renderer;
     Resources* m_resources;
     InputManager* m_inputManager;
 };

@@ -1,37 +1,23 @@
-// Basic structure is taken from Sparky Game Engine.
-// https://github.com/TheCherno/Sparky
-#ifndef RENDERER_HPP_
-#define RENDERER_HPP_
+#ifndef FORWARDRENDERER2D_HPP_
+#define FORWARDRENDERER2D_HPP_
 
 #include <glm/glm.hpp>
-#include <string>
-#include <vector>
-
-#include "Application/Resources.hpp"
 #include "Graphics/Camera.hpp"
-#include "gl/VertexArray.hpp"
-#include "gl/VertexBuffer.hpp"
-#include "gl/IndexBuffer.hpp"
-#include "Font.hpp"
-#include "Utilities/MatrixStack.hpp"
-#include "Utilities/Rect.hpp"
-#include "Renderable2D.hpp"
-#include "Shader.hpp"
+#include "Graphics/Font.hpp"
+#include "Graphics/gl/VertexArray.hpp"
+#include "Graphics/gl/VertexArray.hpp"
+#include "Graphics/Renderable2D.hpp"
+#include "Graphics/Texture2D.hpp"
+#include "Application/Resources.hpp"
 
-#define MAX_TEXTURE_SIZE 60000
-#define MAX_INDICE_SIZE MAX_TEXTURE_SIZE * 6
-#define MAX_BUFFER_SIZE (MAX_TEXTURE_SIZE * 4 * sizeof(VertexData))
+#define MAX_VERTICES 4
 
-class Renderable;
-
-
-class Renderer {
+class ForwardRenderer2D {
 
   public:
+    ForwardRenderer2D(const glm::ivec2& _bufferSize);
 
-    Renderer(const glm::ivec2& _bufferSize);
-
-void Init();
+    void Init();
 
     void Submit(Renderable2D* _entity);
     void Begin();
@@ -76,19 +62,18 @@ void Init();
     void SetCamera(Camera* _camera);
   private:
 
-    float SubmitTexture(Texture2D* _texture);
+    void SubmitTexture(Texture2D* _texture);
 
-    std::vector<Texture2D*> m_textures; ///< List of currently rendered textures.
+    Texture2D* m_texture;               ///< Only one texture at a time.
     MatrixStack* m_matrixStack;         ///< Rendering matrix stack.
     Shader* m_textureShader;            ///< Shader program for rendering textures.
     Shader* m_textShader;               ///< Shader program fro rendering text.
-    VertexArray* m_vertexArray;         ///< Vertex Array object for rendering.
-    IndexBuffer* m_indexBuffer;         ///< Single buffer for storing indices.
+    VertexBuffer* m_vertexBuffer;             ///< Vertex Array Buffer for rendering.
+    VertexArray* m_vertexArray;
     VertexData* m_vertexData;           ///< Buffer for storing vertex buffer.
     size_t m_indexSize;                 ///< Number of indices that should be rendered.
     glm::ivec2 m_bufferSize;            ///< The size of the rendering buffer.
     Camera* m_camera;                   ///< The scenes camera.
 };
-
 
 #endif

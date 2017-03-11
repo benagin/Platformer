@@ -24,9 +24,8 @@ Init() {
   Game::InitGL();
   m_window = Window::Init(Windowed);
   m_window->Init();
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   Game::InitGlew();
-  m_resources = Resources::Init("../assets/game.rsc");
+  m_resources = Resources::Init("../assets/XML/Resources/resources.xml");
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
   m_running = true;
@@ -34,7 +33,7 @@ Init() {
   // m_camera = new Camera(glm::ortho(-16.0f, 16.0f, -9.0f, 
   //   9.0f, -1.0f, 1.0f));
     
-  m_renderer = new Renderer(
+  m_renderer = new ForwardRenderer2D(
     glm::ivec2(
       m_window->GetWidth(),
       m_window->GetHeight()
@@ -71,8 +70,8 @@ Render() {
   for(auto e : m_entities) {
     m_renderer->Submit(e);
   }
-  m_renderer->Present();
   m_renderer->End();
+  // m_renderer->Present();
 
   // Reset camera aspect if window size changes.
   m_camera.SetAspect((float) m_window->GetWidth()/(float) m_window->GetHeight());
