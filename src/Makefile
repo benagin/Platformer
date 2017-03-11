@@ -3,12 +3,18 @@
 # Set debug mode.
 debug ?= 0
 
-# Replace with the directory that contains ft2build.h.
+CELLAR ?= /usr/local/Cellar
+
+# Replace with the directory that contains your freetype libraries.
 # if the new Font implementation words, this isnt needed anymore.
-FTYPE_INC_DIR  ?= /usr/local/Cellar/freetype/2.7/include/freetype2/
+FTYPE_INC_DIR  ?= $(CELLAR)/freetype/2.7/include/freetype2/
 
 # Replace with the directory that contains freetype.a.
-FTYPE_LINK_DIR ?= /usr/local/Cellar/freetype/2.7/lib/
+FTYPE_LINK_DIR ?= $(CELLAR)/freetype/2.7/lib/
+
+# Replace with the directory that contains tinyxml2.h and libtinyxml2.dylib
+TINYXML_INC_DIR ?= $(CELLAR)/tinyxml2/4.0.1/include/
+TINYXML_LINK_DIR ?= $(CELLAR)/tinyxml2/4.0.1/lib/
 
 # Directory Layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -24,10 +30,10 @@ ifeq ($(debug), 1)
 endif
 
 FRMWRKS  = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
-LIBS     = -lglfw -lglew -lfreetype
+LIBS     = -lglfw -lglew -lfreetype -ltinyxml2
 
-INC_DIRS = -I$(FTYPE_INC_DIR) -I./
-LIB_DIRS = -L$(FTYPE_LINK_DIR)
+INC_DIRS = -I$(FTYPE_INC_DIR) -I$(TINYXML_INC_DIR) -I./
+LIB_DIRS = -L$(FTYPE_LINK_DIR) -L$(TINYXML_LINK_DIR)
 
 DEPS = -MMD -MF $*.d
 

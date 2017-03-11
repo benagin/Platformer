@@ -12,7 +12,7 @@ in DATA {
 
 uniform sampler2D textures[16];
 
-void main() {    
+void main() {
     vec4 texColor = fs_in.color;
     int tid = int(fs_in.tid - 0.5);
     texColor = fs_in.color * texture(textures[tid], fs_in.uv);

@@ -1,6 +1,6 @@
 # Change Log: Platformmer Game
 
-## 04/03/20017: Andrew
+## 01/03/2017: Andrew
 * Since last Log:
   * Created input manager
   * Created resource manager
@@ -12,7 +12,7 @@
 * Completely added mouse movement and mouse click input controls. The game and window now know where the mouse was clicked.
 * Nothing is rendering anymore because of a lack of a rendering system.
 
-## 19/02/20017: Andrew
+## 19/02/2017: Andrew
 * Added a texture loading object
 * Added a Texture rendering function to make sure the textures work. (They do)
 * Made a little solder move around the screen using wasd and shift will speed him up (very 	 rudimentary).

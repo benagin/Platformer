@@ -2,10 +2,11 @@
 
 #include "Renderer2D.hpp"
 #include "Application/Resources.hpp"
-#include "Utils/GLDebug.hpp"
+#include "Utilities/GLDebug.hpp"
 
 #include <iostream>
 using namespace std;
+
 
 Renderer::
 Renderer(const glm::ivec2& _bufferSize) {
@@ -18,7 +19,8 @@ Renderer(const glm::ivec2& _bufferSize) {
   SetScreenSize(_bufferSize);
 }
 
-void 
+
+void
 Renderer::
 Init() {
 
@@ -69,7 +71,7 @@ Init() {
   glCheckError();
 
   offset += sizeof(float) * 3;
-  
+
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
   glCheckError();
@@ -113,16 +115,17 @@ Init() {
   cout << "Initialized Renderer" << endl;
 }
 
-void 
+
+void
 Renderer::
-Submit(Renderable2D* _Renderable2D) {
-  const auto& bbox = _Renderable2D->GetBoundingBox();
+Submit(Renderable2D* _renderable) {
+  const auto& bbox = _renderable->GetBoundingBox();
 
   const auto& min = bbox.GetLowerBounds();
   const auto& max = bbox.GetUpperBounds();
 
-  Texture2D* texture = _Renderable2D->Texture();
-  const std::vector<glm::vec2>& uvs = _Renderable2D->GetUVs();
+  Texture2D* texture = _renderable->Texture();
+  const std::vector<glm::vec2>& uvs = _renderable->GetUVs();
 
   float slot = 0.0f;
   if(texture)
@@ -135,7 +138,7 @@ Submit(Renderable2D* _Renderable2D) {
   m_vertexData->m_tid = slot;
   m_vertexData->m_color = 0xffffffff;
   m_vertexData++;
-  
+
   vertex = m_matrixStack->topMatrix() * glm::vec4(max.x, min.y, 0.0, 0.0);
   m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
   m_vertexData->m_uv = uvs[1];
@@ -157,8 +160,9 @@ Submit(Renderable2D* _Renderable2D) {
   m_vertexData->m_color = 0xffffffff;
   m_vertexData++;
 
-  m_indexSize += 6; 
+  m_indexSize += 6;
 }
+
 
 void
 Renderer::
@@ -169,7 +173,8 @@ Begin() {
   glCheckError();
 }
 
-void 
+
+void
 Renderer::
 Present() {
   // set shader values
@@ -211,69 +216,83 @@ End() {
   m_vertexArray->Unbind();
 }
 
-void 
+
+void
 Renderer::
 DrawString(const std::string& _text, float _x, float _y, const Font& _font, unsigned int _color) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawLine(float _x0, float _y0, float _x1, float _y1, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawLine(const glm::vec2& _start, const glm::vec2& _end, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(float _x, float _y, float _width, float _height, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(const glm::vec2& _location, const glm::vec2& _size, unsigned int _color, float _thickness) {
 
 }
+
+
 void
 Renderer::
 DrawRect(const Rect& _rect, unsigned int _color, float _thickness) {
 
 }
 
-void 
+
+void
 Renderer::
 DrawRect(const Rectangle& _rect, unsigned int _color, float _thickness) {
 
 }
 
 
-void 
+void
 Renderer::
 FillRect(float _x, float _y, float _width, float _height, unsigned int _color) {
 
 }
-void 
+
+
+void
 Renderer::
 FillRect(const glm::vec2& _location, const glm::vec2& _size, unsigned int _color) {
 
 }
 
-void 
+
+void
 Renderer::
 FillRect(const Rect& _rect, unsigned int _color) {
 
 }
-void 
+
+
+void
 Renderer::
 FillRect(const Rectangle& _rect, unsigned int _color) {
 
 }
+
 
 void
 Renderer::
@@ -281,6 +300,7 @@ SetScreenSize(const glm::ivec2& _bufferSize) {
   m_bufferSize = _bufferSize;
   glViewport(0, 0 , m_bufferSize.x, m_bufferSize.y);
 }
+
 
 float
 Renderer::
@@ -306,6 +326,7 @@ SubmitTexture(Texture2D* _texture) {
   }
   return result;
 }
+
 
 void
 Renderer::

@@ -17,7 +17,7 @@
   * Animation
 * Resource Management System
   * Textures
-  * Sprite Sheet 
+  * Sprite Sheet
   * Shaders
   * Fonts
   * Audio

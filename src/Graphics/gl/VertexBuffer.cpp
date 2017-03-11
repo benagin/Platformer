@@ -1,4 +1,4 @@
-#include "Utils/GLDebug.hpp"
+#include "Utilities/GLDebug.hpp"
 #include "VertexBuffer.hpp"
 
 /// @brief a function for converting between Usage and GLenum.

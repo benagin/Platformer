@@ -8,12 +8,15 @@
 #include "Events/WindowResizeEvent.hpp"
 #include "Events/WindowScrollEvent.hpp"
 
+
 Game::
-Game(): m_window(nullptr), m_state(Menu), m_running(false), 
+Game(): m_window(nullptr), m_state(Menu), m_running(false),
   m_inputManager(nullptr) {}
+
 
 Game::
 ~Game() {}
+
 
 void
 Game::
@@ -21,14 +24,15 @@ Init() {
   Game::InitGL();
   m_window = Window::Init(Windowed);
   m_window->Init();
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   Game::InitGlew();
   m_resources = Resources::Init("../assets/game.rsc");
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
   m_running = true;
   
-  m_camera = new Camera(glm::ortho(-16.0f, 16.0f, -9.0f, 
-    9.0f, -1.0f, 1.0f));
+  // m_camera = new Camera(glm::ortho(-16.0f, 16.0f, -9.0f, 
+  //   9.0f, -1.0f, 1.0f));
     
   m_renderer = new Renderer(
     glm::ivec2(
@@ -36,7 +40,7 @@ Init() {
       m_window->GetHeight()
       )
     );
-  m_renderer->SetCamera(m_camera);
+  m_renderer->SetCamera(&m_camera);
   m_renderer->Init();
   
 
@@ -45,6 +49,10 @@ Init() {
     glm::vec3(10,10,0),
     glm::vec2(1,1)); 
   m_entities.push_back(temp);
+
+  m_camera.SetInitDistance(2.);
+
+  glEnable(GL_DEPTH_TEST);
 }
 
 
@@ -53,6 +61,7 @@ Game::
 Update() {
   ProcessInput();
 }
+
 
 void
 Game::
@@ -64,7 +73,58 @@ Render() {
   }
   m_renderer->Present();
   m_renderer->End();
+
+  // Reset camera aspect if window size changes.
+  m_camera.SetAspect((float) m_window->GetWidth()/(float) m_window->GetHeight());
+
+  switch(m_state) {
+      case Menu:
+        RenderMenu();
+        break;
+
+      case Gameplay:
+        RenderGame();
+        break;
+
+      case GameOver:
+        RenderGameOver();
+        break;
+    }
 }
+
+
+void
+Game::
+RenderMenu() {
+  // Draw menu GUI.
+  //m_menu.Draw(s);
+}
+
+
+void
+Game::
+RenderGame() {
+  // Matrix stacks
+  MatrixStack P;
+  MatrixStack MV;
+
+  // Apply camera transforms.
+  P.pushMatrix();
+  m_camera.ApplyProjectionMatrix(P);
+  MV.pushMatrix();
+  m_camera.ApplyViewMatrix(MV);
+
+  P.popMatrix();
+  MV.popMatrix();
+}
+
+
+void
+Game::
+RenderGameOver() {
+
+}
+
 
 void
 Game::
@@ -75,12 +135,12 @@ InitGL() {
   // NOTE(ANDREW): 17/02/2017
   // This is setting the version of open gl that we are using
   // In this case it is being set to version 3.3
-  // This will be moved out of main at some point.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
+
 
 void
 Game::
@@ -99,27 +159,33 @@ InitGlew() {
     << std::endl;
 }
 
+
 void
 Game::
 Run() {
   while(!m_window->ShouldClose()) {
     Update();
+
     Render();
+
     m_window->PollEvents();
   }
 }
 
-void 
+
+void
 Game::
 ToggleKey(unsigned int _key) {
   m_keys[_key] = !m_keys[_key];
 }
+
 
 void
 Game::
 SetCursor(const glm::dvec2& _pos) {
   m_window->SetMouseLocation(_pos);
 }
+
 
 void
 Game::
@@ -142,6 +208,9 @@ ProcessInput() {
       auto mouseEvent = (MouseClickEvent*) event;
       auto loc = mouseEvent->Location();
       std::cout << "Mouse Clicked at: " <<  loc.x << ", " << loc.y << std::endl;
+      if(m_state == Menu) {
+
+      }
     } break;
     case MouseMovement: {
       auto mouseEvent = (MouseMovementEvent*) event;
@@ -156,6 +225,7 @@ ProcessInput() {
   }
   delete event;
 }
+
 
 void
 Game::

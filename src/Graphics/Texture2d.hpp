@@ -11,6 +11,8 @@
 #include <GL/glew.h>
 #include <string>
 
+#include <string>
+
 /// @brief Texture2D representation.
 class Texture2D {
 
@@ -53,6 +55,8 @@ class Texture2D {
 
          /// @bried Which gl texture is this.
         void SetUnit(unsigned int _unit) { m_unit = _unit;}
+
+        unsigned int* GetData() const { return m_data; }
 
         /// @}
     private:

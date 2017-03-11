@@ -12,10 +12,14 @@
 
 #include <map>
 #include <string>
-#include "Texture2D.hpp"
-
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+
+#include "Texture2D.hpp"
+#include "Utilities/GLDebug.hpp"
 
 
 /// @brief A representation of a font.

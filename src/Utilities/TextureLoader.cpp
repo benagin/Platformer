@@ -1,12 +1,9 @@
 #include "TextureLoader.hpp"
-#include <iostream>
-#include <cassert>
 
 #include <glm/glm.hpp>
-
 extern "C" {
 	#define STB_IMAGE_IMPLEMENTATION
-	#include "Utils/stb_image.h"
+	#include "Utilities/stb_image.h"
 }
 
 Texture2D
@@ -23,18 +20,18 @@ Load(const std::string& _filename) {
 	int x, y, channels;
 	Texture2D tex; // = Texture2D();
 	unsigned int* data = (unsigned int*) stbi_load(_filename.c_str(), &x, &y, &channels, STBI_rgb_alpha);
-	
+
 
 	if(!data) {
 		std::cout << stbi_failure_reason() << std::endl;
 		return Texture2D();	
 	}
-	
+
 	if(channels == 4) {
 		tex.SetInternalFormat(GL_RGBA);
 		tex.SetImageFormat(GL_RGBA);
 	}
-		
+
 	tex.Generate(x, y, data);
 	*/
 	return Texture2D(-1, 0, 0, nullptr);
@@ -46,7 +43,7 @@ LoadPtr(const std::string& _filename) {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-	glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);	
+	glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 	int x, y, channels;
 	stbi_set_flip_vertically_on_load(1);
 	unsigned char* data = stbi_load(_filename.c_str(), &x, &y, &channels, STBI_rgb_alpha);

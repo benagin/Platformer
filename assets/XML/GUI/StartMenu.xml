@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUI type="StartMenu">
+
+  <Buttons>
+    <Button text="Start Game" posx="50.0" posy="50.0"/>
+  </Buttons>
+
+</GUI>

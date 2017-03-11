@@ -10,14 +10,17 @@
 #define TEXTURE_LOADER_HPP_
 
 #include <string>
+#include <iostream>
+#include <cassert>
+#include <glm/glm.hpp>
 
-#include "graphics/Texture2D.hpp"
+#include "Graphics/Texture2D.hpp"
 
 
 class TextureLoader {
 
 public:
-	/////////////////////////////////////////////////////////////////////////////	
+	////////////////////////////////////////////////////////////////////////
 	/// @name Constructors and Destructors
 	/// @{
 
@@ -27,7 +30,7 @@ public:
 	/// @}
 	/// @name Operators
 	/// @{
-	/// @brief Operator for loading a Texture	
+	/// @brief Operator for loading a Texture
 	/// @param _filename The path name to the image.
 	/// @return The new texture	
 	Texture2D operator() (const std::string& _filename);

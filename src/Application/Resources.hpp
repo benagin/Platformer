@@ -8,8 +8,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "Utils/FontLoader.hpp"
-#include "Utils/TextureLoader.hpp"
+#include "Utilities/FontLoader.hpp"
+#include "Utilities/TextureLoader.hpp"
 #include "Graphics/Texture2D.hpp"
 #include "Graphics/Font.hpp"
 #include "Graphics/Shader.hpp"
@@ -26,11 +26,11 @@ class Resources {
   public:
     Resources();
     ~Resources();
-  
+
     void AddFont(const string& _name, Font* _font);
     void AddTexture(const string& _name, Texture2D* _texture);
     void AddShader(const string& _name, Shader* _shader);
-  
+
     Font* GetFont(const string& _name);
     Texture2D* GetTexture(const string& _name);
     Shader* GetShader(const string& _name);  

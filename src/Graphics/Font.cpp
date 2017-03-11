@@ -1,8 +1,4 @@
 #include "Font.hpp"
-#include "Utils/GLDebug.hpp"
-#include <fstream>
-#include <iostream>
-#include <sstream>
 
 Font::Glyph::
 Glyph(GLuint _tex, const glm::ivec2& _size, const glm::ivec2& _bearing, int _adv, unsigned int* _data) :

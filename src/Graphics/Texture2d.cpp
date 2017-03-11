@@ -1,5 +1,5 @@
+#include "Utilities/GLDebug.hpp"
 #include "Texture2D.hpp"
-#include "utils/GLDebug.hpp"
 unsigned int Texture2D::m_nextId = 0;
 
 Texture2D::
