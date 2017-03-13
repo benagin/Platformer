@@ -2,6 +2,7 @@
 <Resources basefile="../assets/">
   <Shader name="text" vertex="text.vs" fragment="text.frag"/>
   <Shader name="sprite" vertex="sprite.vs" fragment="sprite.frag"/>
+  <Shader name="forward" vertex="forwardShader.vs" fragment="forwardShader.frag"/>
   <Texture name="block" file="block.jpeg"/>
   <Texture name="person" file="test_person.png"/>
   <Font name="roboto" file="Roboto-Light.ttf" height="24" default="true"/>

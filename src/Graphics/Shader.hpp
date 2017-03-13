@@ -33,6 +33,7 @@ class Shader {
     GLuint GetProgram() const { return m_program; }
 
     void SetMatrix4(const std::string& _att, const glm::mat4& _m);
+    void SetMatrix3(const std::string& _att, const glm::mat3& _m);
 
     void SetFloat(const std::string& _att, float _f);
     void SetInteger(const std::string& _att, int _i);
@@ -44,8 +45,6 @@ class Shader {
     void SetVector2f(const std::string& _att, const glm::vec2& _v);
     void SetVector3f(const std::string& _att, const glm::vec3& _v);
     void SetVector4f(const std::string& _att, const glm::vec4& _v);
-
-
 
   private:
     GLuint m_program; ///< The program ID.

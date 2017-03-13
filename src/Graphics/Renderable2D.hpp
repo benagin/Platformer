@@ -48,6 +48,11 @@ public:
 	void Submit(Renderer* _renderer);
 	Texture2D* Texture();
 	const Rect& GetBoundingBox() { return m_bbox; }
+	
+	// Quick solution for now. 
+	// It might be better to change have the renderer compute the
+	// Transformation matrix.
+	glm::mat4 GetTransform();
 	static const std::vector<glm::vec2>& DefaultUVs();
 protected:
 	glm::vec3 m_location;

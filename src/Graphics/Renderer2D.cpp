@@ -73,20 +73,20 @@ Init() {
   offset += sizeof(float) * 3;
 
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, (void*)(3 * sizeof(float)));
   glCheckError();
   
   offset += sizeof(float) * 2;
 
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, 0);
+  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, (void*)(5 * sizeof(float)));
   glCheckError();
 
   offset += sizeof(float);
 
   glEnableVertexAttribArray(3);
   glCheckError();
-  glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, offset, 0);
+  glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, offset, (void*)(6 * sizeof(float)));
   cout << "Finished Vertex Attributes" << endl;
 
   m_vertexArray->AddBuffer(buffer);

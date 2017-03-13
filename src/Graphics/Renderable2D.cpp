@@ -1,6 +1,7 @@
 #include "Renderable2D.hpp"
 #include "Graphics/Renderer2D.hpp"
 #include "Utilities/GLDebug.hpp"
+#include "Utilities/MatrixStack.hpp"
 
 Renderable2D::
 Renderable2D(Texture2D* _tex, const glm::vec3& _loc,
@@ -66,10 +67,10 @@ Renderable2D::
 DefaultUVs() {
   static std::vector<glm::vec2> uvs;
   if(!uvs.size()) {
-    uvs.push_back(glm::vec2(0, 1));
-    uvs.push_back(glm::vec2(1, 1));
-    uvs.push_back(glm::vec2(1, 0));
     uvs.push_back(glm::vec2(0, 0));
+    uvs.push_back(glm::vec2(1, 0));
+    uvs.push_back(glm::vec2(1, 1));
+    uvs.push_back(glm::vec2(0, 1));
   }
   return uvs;
 }
@@ -78,4 +79,15 @@ Texture2D*
 Renderable2D::
 Texture() {
   return m_texture;
+}
+
+glm::mat4
+Renderable2D::
+GetTransform() {
+  MatrixStack ms;
+  ms.pushMatrix();
+  ms.translate(m_location);
+  ms.rotate(m_rotation, glm::vec3(0, 1, 0));
+  ms.scale(m_size.x, m_size.y, 1);
+  return ms.topMatrix();
 }

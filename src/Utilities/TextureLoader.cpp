@@ -47,7 +47,6 @@ LoadPtr(const std::string& _filename) {
 	int x, y, channels;
 	stbi_set_flip_vertically_on_load(1);
 	unsigned char* data = stbi_load(_filename.c_str(), &x, &y, &channels, STBI_rgb_alpha);
-	std::cout << "Height: " << y << " Width: " << x << " Channels " << channels << std::endl;
 	if(!data) {
 		std::cout << stbi_failure_reason() << std::endl;
 		return nullptr;

@@ -49,25 +49,28 @@ void
 VertexBuffer::
 SetData(void* _data, size_t _size) {
   m_size = _size;
-  glBindBuffer(GL_ARRAY_BUFFER, m_handle);
+  Bind();
   glBufferData(GL_ARRAY_BUFFER, m_size, nullptr, ToGlUsage(m_usage));
   glCheckError();
+  Unbind();
   m_filled = true;
 }
 
 void*
 VertexBuffer::
 Pointer() {
-  glBindBuffer(GL_ARRAY_BUFFER, m_handle);
+  Bind();
   void* result = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+  Unbind();
   return result;
 }
 
 void
 VertexBuffer::
 Release() {
-  glBindBuffer(GL_ARRAY_BUFFER, m_handle);
+  Bind();
   glUnmapBuffer(GL_ARRAY_BUFFER);
+  Unbind();
 }
 
 void

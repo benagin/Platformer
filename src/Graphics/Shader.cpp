@@ -1,4 +1,5 @@
 #include "Shader.hpp"
+#include "Utilities/GLDebug.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 Shader::
@@ -123,9 +124,11 @@ GetAttribute(const std::string& _att) {
 GLuint
 Shader::
 AddAttribute(const std::string& _att) {
-  GLuint t = glGetAttribLocation(m_program, _att.c_str());
-  m_attributes.emplace(_att, t);
-
+  GLint t = glGetAttribLocation(m_program, _att.c_str());
+  if(t == -1)
+    std::cout << _att << " is not a attribute variable" << std::endl;
+  else
+    m_attributes.emplace(_att, t);
   return t;
 }
 
@@ -137,7 +140,6 @@ GetUniform(const std::string& _att) {
 
   if(loc == m_uniforms.end()) {
     std::cout << "Error: " << _att << " is not a uniform variable." << std::endl;
-
     return -1;
   }
 
@@ -148,9 +150,12 @@ GetUniform(const std::string& _att) {
 GLuint
 Shader::
 AddUniform(const std::string& _att) {
-  GLuint t = glGetUniformLocation(m_program, _att.c_str());
-  m_uniforms.emplace(_att, t);
-
+  GLint t = glGetUniformLocation(m_program, _att.c_str());
+  if(t == -1)
+    std::cout << "Error: " << _att << " is not a uniform variable" << std::endl;
+  else {
+    m_uniforms.emplace(_att, t);
+  }
   return t;
 }
 
@@ -209,4 +214,12 @@ Shader::
 SetMatrix4(const std::string& _att, const glm::mat4& _mat) {
   glUniformMatrix4fv(GetUniform(_att), 1, GL_FALSE, glm::value_ptr(_mat));
 }
+
+void
+Shader::
+SetMatrix3(const std::string& _att, const glm::mat3& _m) {
+  glUniformMatrix3fv(GetUniform(_att), 1, GL_FALSE, glm::value_ptr(_m));
+  glCheckError();
+}
+
 

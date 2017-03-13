@@ -6,11 +6,12 @@
 #include "Graphics/Font.hpp"
 #include "Graphics/gl/VertexArray.hpp"
 #include "Graphics/gl/VertexArray.hpp"
+#include "Graphics/gl/IndexBuffer.hpp"
 #include "Graphics/Renderable2D.hpp"
 #include "Graphics/Texture2D.hpp"
 #include "Application/Resources.hpp"
 
-#define MAX_VERTICES 4
+#define MAX_VERTICES 6
 
 class ForwardRenderer2D {
 
@@ -63,6 +64,8 @@ class ForwardRenderer2D {
   private:
 
     void SubmitTexture(Texture2D* _texture);
+    void BindTexture(const std::string& _att, Texture2D* _tex);
+    // void BindTextures(const std::string& _att, std::vector<Texture2D*> _tex);
 
     Texture2D* m_texture;               ///< Only one texture at a time.
     MatrixStack* m_matrixStack;         ///< Rendering matrix stack.
@@ -70,10 +73,13 @@ class ForwardRenderer2D {
     Shader* m_textShader;               ///< Shader program fro rendering text.
     VertexBuffer* m_vertexBuffer;             ///< Vertex Array Buffer for rendering.
     VertexArray* m_vertexArray;
-    VertexData* m_vertexData;           ///< Buffer for storing vertex buffer.
+    IndexBuffer* m_indexBuffer;
+    VertexData m_vertexData[MAX_VERTICES];           ///< Buffer for storing vertex buffer.
     size_t m_indexSize;                 ///< Number of indices that should be rendered.
     glm::ivec2 m_bufferSize;            ///< The size of the rendering buffer.
     Camera* m_camera;                   ///< The scenes camera.
+    
+    glm::mat3 t;  
 };
 
 #endif

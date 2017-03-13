@@ -270,42 +270,13 @@ static void render()
 
 int
 main() {
-
-
+  GameConfig config("../config/game_config.ini");
   game = new Game();
   game->Init();
-  GameConfig config("../config/game_config.ini");
-  glClearColor(1,1,1,1); 
-  // Set error callback.
-  // glfwSetErrorCallback(error_callback);
-
-  // window = Window::Init(Windowed);
-  // HEIGHT = window->GetHeight();
-  // WIDTH = window->GetWidth();
-  // window->Init();
-
-  // Initialize GLEW.
-  // glew_init();
-
-  // // Set vsync.
-  // glfwSwapInterval(1);
-
-  // // Set cursor position callback.
-  // glfwSetCursorPosCallback(window->GlfwWindow(), cursor_position_callback);
-
-  // // Set mouse button callback.
-  // glfwSetMouseButtonCallback(window->GlfwWindow(), mouse_button_callback);
-
-  // // Set the window resize call back.
-  // glfwSetFramebufferSizeCallback(window->GlfwWindow(), resize_callback);
-
-  // // Set keyboard callback
-  // glfwSetKeyCallback(window->GlfwWindow(), keyboard_callback);
-
-  // Initialize scene.
 
   game->Run();
   // game->Close();
+  
   // Quit program.
   delete game;
 

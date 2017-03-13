@@ -27,3 +27,18 @@ GLenum glCheckError_(const char *file, int line)
 
   return errorCode;
 }
+
+std::ostream& operator<< (std::ostream& _out, const glm::vec4& _v) {
+  _out << _v.x  << " " << _v.y << " " << _v.z << " " << _v.w;
+  return _out;
+}
+
+std::ostream& operator<< (std::ostream& _out, const glm::vec3& _v) {
+  _out << _v.x  << " " << _v.y << " " << _v.z;
+  return _out;
+}
+
+std::ostream& operator<< (std::ostream& _out, const glm::vec2& _v) {
+  _out << _v.x  << " " << _v.y;
+  return _out;
+}

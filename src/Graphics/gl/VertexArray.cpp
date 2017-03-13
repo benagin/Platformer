@@ -1,4 +1,5 @@
 #include "VertexArray.hpp"
+#include <iostream>
 
 VertexArray::
 VertexArray() {
@@ -28,14 +29,11 @@ void
 VertexArray::
 Bind() {
   glBindVertexArray(m_handle);
-  if(!m_buffers.empty())
-    m_buffers.front()->Bind();
 }
 
 void
 VertexArray::
 Unbind() {
-  m_buffers.front()->Unbind();
   glBindVertexArray(0);
 }
 

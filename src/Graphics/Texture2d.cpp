@@ -40,6 +40,7 @@ void
 Texture2D::
 Unbind() const {
     glActiveTexture(GL_TEXTURE0 + m_unit);
+    glCheckError();
     glBindTexture(GL_TEXTURE_2D, 0);
     glCheckError();
 }

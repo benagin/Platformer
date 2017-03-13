@@ -6,7 +6,7 @@
 
 #include "Entities/Entity.hpp"
 #include "Graphics/UI/Window.hpp"
-// #include "Graphics/Renderer2D.hpp"
+#include "Graphics/Renderer2D.hpp"
 #include "Graphics/ForwardRenderer2D.hpp"
 #include "Graphics/UI/Window.hpp"
 #include "Graphics/UI/GUI.hpp"
@@ -46,6 +46,12 @@ class Game {
     void SetCursor(const glm::dvec2& _pos);
     void ToggleKey(unsigned int _key);
 
+    bool Running() { return !m_window->ShouldClose(); }
+
+    void BufferUpdate() { 
+      m_window->SwapBuffers();
+      m_window->PollEvents();
+    }
     static void InitGL();
     static void InitGlew();
 

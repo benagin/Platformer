@@ -8,6 +8,8 @@
 #include "Events/WindowResizeEvent.hpp"
 #include "Events/WindowScrollEvent.hpp"
 
+#include "Utilities/GLDebug.hpp"
+
 
 Game::
 Game(): m_window(nullptr), m_state(Menu), m_running(false),
@@ -25,6 +27,8 @@ Init() {
   m_window = Window::Init(Windowed);
   m_window->Init();
   Game::InitGlew();
+  glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA); 
+  glClearColor(1.0f,1.0f,1.0f,1.0f); 
   m_resources = Resources::Init("../assets/XML/Resources/resources.xml");
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
@@ -41,37 +45,40 @@ Init() {
     );
   m_renderer->SetCamera(&m_camera);
   m_renderer->Init();
+  glCheckError();
   
 
   Entity* temp = new Entity(
     m_resources->GetTexture("person"),
     glm::vec3(10,10,0),
-    glm::vec2(1,1)); 
+    glm::vec2(20,20)); 
   m_entities.push_back(temp);
 
   m_camera.SetInitDistance(2.);
 
-  glEnable(GL_DEPTH_TEST);
+  // glEnable(GL_DEPTH_TEST);
+  glCheckError();
 }
 
 
 void
 Game::
 Update() {
+  m_window->PollEvents();
   ProcessInput();
+  glClear(GL_COLOR_BUFFER_BIT);
 }
 
 
 void
 Game::
 Render() {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  m_renderer->Begin();
+  // m_renderer->Begin();
   for(auto e : m_entities) {
     m_renderer->Submit(e);
   }
-  m_renderer->End();
   // m_renderer->Present();
+  // m_renderer->End();
 
   // Reset camera aspect if window size changes.
   m_camera.SetAspect((float) m_window->GetWidth()/(float) m_window->GetHeight());
@@ -150,8 +157,7 @@ InitGlew() {
     exit(1);
   }
   glGetError();
-  glEnable(GL_DEPTH_TEST);
-  glClearColor(1.0,1.0,1.0,1.0);
+  // glEnable(GL_DEPTH_TEST);
 
   std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
   std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION)
@@ -167,7 +173,7 @@ Run() {
 
     Render();
 
-    m_window->PollEvents();
+    m_window->SwapBuffers();
   }
 }
 

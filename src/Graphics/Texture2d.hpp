@@ -56,6 +56,8 @@ class Texture2D {
          /// @bried Which gl texture is this.
         void SetUnit(unsigned int _unit) { m_unit = _unit;}
 
+        unsigned int GetUnit() { return m_unit; }
+
         unsigned int* GetData() const { return m_data; }
 
         /// @}

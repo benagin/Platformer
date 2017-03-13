@@ -8,7 +8,6 @@ ForwardRenderer2D(const glm::ivec2& _bufferSize) {
   m_textureShader = nullptr;
   m_textShader = nullptr;
   m_vertexBuffer = nullptr;
-  m_vertexData = nullptr;
   SetScreenSize(_bufferSize);
 }
 
@@ -18,7 +17,6 @@ ForwardRenderer2D::
 Init() {
   cout << "Initializing Renderer" << endl;
 
-  cout << "Initializing Shader:\n\tAttributes\n\tUniforms\n";
 
   // create a new matrix stack
   m_matrixStack = new MatrixStack;
@@ -27,111 +25,78 @@ Init() {
   m_matrixStack->pushMatrix();
 
   // getting the sprite shader from resouces
-  m_textureShader = Resources::Get()->GetShader("sprite");
+  m_textureShader = Resources::Get()->GetShader("forward");
 
   m_textureShader->Bind();
   // Setting attributes and unifomrs
   m_textureShader->AddAttribute("position");
   m_textureShader->AddAttribute("uv");
-  m_textureShader->AddAttribute("tid");
-  m_textureShader->AddAttribute("color");
 
   m_textureShader->AddUniform("projection");
+  m_textureShader->AddUniform("modelview");
+  // m_textureShader->AddUniform("textureMatrix");
   m_textureShader->AddUniform("textures");
 
   m_textureShader->Unbind();
 
   // getting the text shader, The sprite shader might be used to render this.
   m_textShader = Resources::Get()->GetShader("text");
-  cout << "Shader Complete\n";
 
-  cout << "Generating Buffers" << endl;
+  GLfloat vertices[] = {
+        // Positions          // Colors           // Texture Coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+  }; 
 
-  m_vertexBuffer = new VertexBuffer(MAX_VERTICES, Usage::DynamicDraw);
-  m_vertexBuffer->Resize(MAX_VERTICES); // I know this is redundant
-
-  // getting the data from the buffer 
-  cout << "Setting up Vertex Attributes" << endl;
+  GLuint indices[] = {
+    0, 1, 3,
+    1, 2, 3
+  };
   m_vertexArray = new VertexArray;
-
+  m_vertexBuffer = new VertexBuffer(MAX_VERTICES, Usage::StaticDraw);
   m_vertexArray->Bind();
-  m_vertexArray->AddBuffer(m_vertexBuffer);
-  
-  GLuint offset = 0;
-  m_vertexBuffer->Bind(); 
 
+  m_vertexBuffer->SetData(vertices, MAX_VERTICES);
+  m_vertexBuffer->Bind();
+  m_indexBuffer = new IndexBuffer(indices, 6);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset, 0);
-  glCheckError();
-
-  offset += sizeof(float) * 3;
-
+  // Color attribute
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, offset, 0);
-  glCheckError();
-  
-  offset += sizeof(float) * 2;
-
+  // TexCoord attribute
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, offset, 0);
+
+  m_vertexArray->Unbind();
   glCheckError();
 
-  offset += sizeof(float);
-
-  glEnableVertexAttribArray(3);
+  m_textureShader->Bind();
+  t[0][0] = 1;  
+  // m_textureShader->SetMatrix3("textureMatrix", t);
   glCheckError();
-  glVertexAttribPointer(3, 1, GL_UNSIGNED_INT, GL_FALSE, offset, 0);
-  cout << "Finished Vertex Attributes" << endl;
 
   m_vertexBuffer->Unbind();
   m_vertexArray->Unbind();
   m_textureShader->Unbind();
-  
-  cout << "Initialized Renderer" << endl;
+
+  cout << "Finished Renderer" << endl;
 }
 
 
 void
 ForwardRenderer2D::
 Submit(Renderable2D* _renderable) {
-  const auto& bbox = _renderable->GetBoundingBox();
+  auto texture = _renderable->Texture();
 
-  const auto& min = bbox.GetLowerBounds();
-  const auto& max = bbox.GetUpperBounds();
-
-  Texture2D* texture = _renderable->Texture();
-  const std::vector<glm::vec2>& uvs = _renderable->GetUVs();
-  
+  m_textureShader->Bind();
   SubmitTexture(texture);
-
-  glm::vec4 vertex = m_matrixStack->topMatrix() * glm::vec4(min, 0.0);
-  m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
-  m_vertexData->m_uv = uvs[0];
-  m_vertexData->m_tid = 0.5f;
-  m_vertexData->m_color = 0xffffffff;
-  m_vertexData++;
-
-  vertex = m_matrixStack->topMatrix() * glm::vec4(max.x, min.y, 0.0, 0.0);
-  m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
-  m_vertexData->m_uv = uvs[1];
-  m_vertexData->m_tid = 0.5f;
-  m_vertexData->m_color = 0xffffffff;
-  m_vertexData++;
-
-  vertex = m_matrixStack->topMatrix() * glm::vec4(max, 0.0);
-  m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
-  m_vertexData->m_uv = uvs[2];
-  m_vertexData->m_tid = 0.5f;
-  m_vertexData->m_color = 0xffffffff;
-  m_vertexData++;
-
-  vertex = m_matrixStack->topMatrix() * glm::vec4(min.x, max.y, 0.0, 0.0);
-  m_vertexData->m_vertex = glm::vec3(vertex.x, vertex.y, vertex.z);
-  m_vertexData->m_uv = uvs[3];
-  m_vertexData->m_tid = 0.5f;
-  m_vertexData->m_color = 0xffffffff;
-  m_vertexData++;
-
+  m_textureShader->SetMatrix4("modelview", _renderable->GetTransform());
+  m_textureShader->Unbind();
+  
   Present();
 }
 
@@ -139,9 +104,6 @@ Submit(Renderable2D* _renderable) {
 void
 ForwardRenderer2D::
 Begin() {
-  m_vertexArray->Bind();
-  m_vertexData = (VertexData*) m_vertexArray->GetBuffer()->Pointer();
-  glCheckError();
 }
 
 
@@ -149,29 +111,31 @@ void
 ForwardRenderer2D::
 Present() {
   m_textureShader->Bind();
+  glCheckError(); 
   m_textureShader->SetMatrix4("projection", m_camera->GetProjection());
+  glCheckError(); 
 
-  auto unit = m_textureShader->GetUniform("textures");
-  m_texture->SetUnit(unit);
-  m_texture->Bind();
+  // m_texture->Bind();
+  BindTexture("textures", m_texture);
+
   m_vertexArray->Bind();
+  m_indexBuffer->Bind();
 
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  glCheckError();
+  m_vertexArray->Draw(6);
+  // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+  m_indexBuffer->Unbind();
   m_vertexArray->Unbind();
-
   m_texture->Unbind();
 
   m_textureShader->Unbind();
+  glCheckError();
 }
 
 
 void
 ForwardRenderer2D::
 End() {
-  m_vertexArray->GetBuffer()->Release();
-  m_vertexArray->Unbind();
 }
 
 
@@ -278,4 +242,11 @@ void
 ForwardRenderer2D::
 SubmitTexture(Texture2D* _texture) {
   m_texture = _texture;
+}
+void
+ForwardRenderer2D::
+BindTexture(const std::string& _att, Texture2D* _tex) {
+  _tex->SetUnit(0);
+  _tex->Bind();
+  m_textureShader->SetInteger("textures", _tex->GetUnit());
 }
