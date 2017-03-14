@@ -1,5 +1,10 @@
 # Change Log: Platformmer Game
 
+## 14/03/2017: Andrew
+* Implemented a forward renderer. This means that it renderers the texture when it is submitted.
+* Need to work on transparent textures.
+* Need to work on the batch renderer.
+
 ## 01/03/2017: Andrew
 * Since last Log:
   * Created input manager

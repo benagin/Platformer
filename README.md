@@ -8,7 +8,7 @@
 
 
 ## Needed
-* Rendering System
+* Rendering System, basics are implemented.
   * Level
   * Entity
   * Particle
@@ -16,7 +16,6 @@
   * User Interface
   * Animation
 * Resource Management System
-  * Textures
   * Sprite Sheet
   * Shaders
   * Fonts
