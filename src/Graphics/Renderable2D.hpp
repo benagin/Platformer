@@ -52,7 +52,10 @@ public:
 	// Quick solution for now. 
 	// It might be better to change have the renderer compute the
 	// Transformation matrix.
-	glm::mat4 GetTransform();
+	// glm::mat4 GetTransform();
+	const glm::vec3& GetLocation();
+	glm::vec3 GetSize();
+	float GetRotation();
 	static const std::vector<glm::vec2>& DefaultUVs();
 protected:
 	glm::vec3 m_location;

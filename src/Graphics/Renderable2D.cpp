@@ -81,13 +81,20 @@ Texture() {
   return m_texture;
 }
 
-glm::mat4
+const glm::vec3&
 Renderable2D::
-GetTransform() {
-  MatrixStack ms;
-  ms.pushMatrix();
-  ms.translate(m_location);
-  ms.rotate(m_rotation, glm::vec3(0, 1, 0));
-  ms.scale(m_size.x, m_size.y, 1);
-  return ms.topMatrix();
+GetLocation() {
+  return m_location;
+}
+
+glm::vec3
+Renderable2D::
+GetSize() {
+  return glm::vec3(m_size, 1.0f);
+}
+
+float
+Renderable2D::
+GetRotation() {
+  return m_rotation;
 }

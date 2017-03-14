@@ -28,6 +28,7 @@ class InputManager {
     static void CharCallback(GLFWwindow* _window, unsigned int);
     static void WindowCursorCallback(GLFWwindow* _window, double, double);
     static void WindowScrollCallback(GLFWwindow* _window, double, double);
+    static void WindowResize(GLFWwindow* _window, int _width, int _height);
 
   private:
     static InputManager* m_instance;

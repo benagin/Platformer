@@ -78,6 +78,10 @@ class ForwardRenderer2D {
     size_t m_indexSize;                 ///< Number of indices that should be rendered.
     glm::ivec2 m_bufferSize;            ///< The size of the rendering buffer.
     Camera* m_camera;                   ///< The scenes camera.
+
+    /// Trying to fix this. Not using the abstracted GL containers
+    GLuint vbo, vao, ebo;
+    
     
     glm::mat3 t;  
 };

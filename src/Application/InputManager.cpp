@@ -136,3 +136,10 @@ void
 InputManager::
 WindowScrollCallback(GLFWwindow* _window, double _xoffset, double _yoffset) {
 }
+void 
+InputManager::
+WindowResize(GLFWwindow* _window, int _width, int _height) {
+  InputManager* manager = InputManager::Get();
+  manager->GetWindow()->SetWindowSize(glm::ivec2(_width, _height));
+  glViewport(0, 0, _width, _height);
+}

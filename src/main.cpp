@@ -7,43 +7,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application/Game.hpp"
-#include "Entities/Entity.hpp"
-
-#include "Graphics/Shader.hpp"
-#include "Graphics/Texture2D.hpp"
-#include "Graphics/ui/Window.hpp"
-#include "Graphics/Font.hpp"
-
-
-#include "Utilities/FontLoader.hpp"
 #include "Utilities/GLDebug.hpp"
-#include "Utilities/TextureLoader.hpp"
 #include "Utilities/GameConfig.hpp"
 
-
-
-float WIDTH;
-float HEIGHT;
-
-Window* window;
-Font* font;
-FontLoader fontLoader;
-
-std::shared_ptr<Shader> shader;
-std::shared_ptr<Shader> sprite_shader;
-GLuint VBO, VAO;
-
-Texture2D* texture;
-TextureLoader loader;
-
-std::shared_ptr<Entity> entity;
-
-GLuint quadVAO;
-glm::vec3 loc(0.0,0.0,0.0);
-glm::vec2 size(100,100);
 Game* game;
-
-
 
 /*
 static void
@@ -248,22 +215,6 @@ static void RenderText(Font* _font, const std::string& _str, const glm::vec2& _l
   shader->Unbind();
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
-}
-*/
-
-
-// This function is called every frame to draw the scene.
-/*
-static void render()
-{
-  // Clear framebuffer.
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Get current frame buffer size.
-
-  RenderText(font, "Sample Text", glm::vec2(25, 25), 1.0, glm::vec3(0.3, 0.5, 0.6));
-  entity->SetLocation(loc);
-  entity->Draw(*sprite_shader);
 }
 */
 

@@ -45,7 +45,7 @@ LoadPtr(const std::string& _filename) {
 	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 	glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 	int x, y, channels;
-	stbi_set_flip_vertically_on_load(1);
+	// stbi_set_flip_vertically_on_load(1);
 	unsigned char* data = stbi_load(_filename.c_str(), &x, &y, &channels, STBI_rgb_alpha);
 	if(!data) {
 		std::cout << stbi_failure_reason() << std::endl;

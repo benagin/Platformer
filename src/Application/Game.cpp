@@ -28,7 +28,7 @@ Init() {
   m_window->Init();
   Game::InitGlew();
   glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA); 
-  glClearColor(1.0f,1.0f,1.0f,1.0f); 
+  glClearColor(0.7f,0.7f,0.8f,1.0f); 
   m_resources = Resources::Init("../assets/XML/Resources/resources.xml");
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
@@ -41,8 +41,9 @@ Init() {
     glm::ivec2(
       m_window->GetWidth(),
       m_window->GetHeight()
-      )
-    );
+    )
+  );
+
   m_renderer->SetCamera(&m_camera);
   m_renderer->Init();
   glCheckError();
@@ -51,7 +52,13 @@ Init() {
   Entity* temp = new Entity(
     m_resources->GetTexture("person"),
     glm::vec3(10,10,0),
-    glm::vec2(20,20)); 
+    glm::vec2(100,100)); 
+  m_entities.push_back(temp);
+
+  temp = new Entity(
+    m_resources->GetTexture("person"),
+    glm::vec3(10,150,0),
+    glm::vec2(100,100));
   m_entities.push_back(temp);
 
   m_camera.SetInitDistance(2.);

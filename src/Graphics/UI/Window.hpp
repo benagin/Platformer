@@ -31,12 +31,19 @@ class Window {
     void Init();
     bool ShouldClose();
     void SetTitle(const std::string& _title);
+    
     int GetWidth() { return m_width; }
     int GetHeight() { return m_height; }
     GLFWwindow* GlfwWindow() { return m_window; }
     void PostQuit();
 
     const glm::dvec2& GetMouseLocation() { return m_mouseLocation; }
+
+    void SetWindowSize(const glm::ivec2& _dim) {
+      m_width = _dim.x;
+      m_width = _dim.y;
+    }
+    
     void SetMouseLocation(const glm::dvec2& _pos);
 
     void SwapBuffers();

@@ -9,7 +9,8 @@ Resources() {
   if(m_instance) {
     std::cout << "Error: Instanciating Multiple Resources" << std::endl;
   }
-  m_instance = this;
+  else
+    m_instance = this;
 }
 
 

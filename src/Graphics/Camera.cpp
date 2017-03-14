@@ -1,6 +1,5 @@
 #include "Camera.hpp"
 
-
 void
 Camera::
 MouseClicked(float _x, float _y, bool _shift, bool _ctrl, bool _alt) {
