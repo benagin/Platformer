@@ -8,8 +8,9 @@ GLenum ToGlUsage(unsigned _enum) {
       return GL_DYNAMIC_DRAW;
     case StaticDraw:
       return GL_STATIC_DRAW;
+    default:
+      return GL_STATIC_DRAW;
   }
-  return GL_DYNAMIC_DRAW;
 }
 
 VertexBuffer::
@@ -50,9 +51,8 @@ VertexBuffer::
 SetData(void* _data, size_t _size) {
   m_size = _size;
   Bind();
-  glBufferData(GL_ARRAY_BUFFER, m_size, nullptr, ToGlUsage(m_usage));
+  glBufferData(GL_ARRAY_BUFFER, m_size, _data, ToGlUsage(m_usage));
   glCheckError();
-  Unbind();
   m_filled = true;
 }
 

@@ -75,6 +75,10 @@ Init(const string& _file) {
   std::string base;
 
   XMLElement* root = xmlDoc.RootElement();
+  if(!root) {
+    std::cout << "Error: XML: Error Reading xml file\n";
+    return nullptr;
+  }
   const char* basefile = root->Attribute("basefile");
   base = std::string(basefile);
 
@@ -109,16 +113,25 @@ Init(const string& _file) {
       std::cout << "Loaded Font: " << name << "\n";
       std::cout << "\t" << file << std::endl;
       Font* f = fontLoader.Load(path + file, height);
+      if(d && !strcmp(d, "true")) {
+        std::cout << d << std::endl;
+        if(!m_instance->m_defaultFont)
+          m_instance->m_defaultFont = f;
+        else {
+          std::cout << "Error: XML: Can not have multiple default fonts\n";
+        }
+      }
       rsc->AddFont(name, f);
     }
 
     std::cout << "\tDefault: ";
-    if(d) {
+    if(d && !strcmp(d, "true")) {
       std::cout << d << std::endl;
     }
     else {
       std::cout << "False\n";
     }
+    d = nullptr;
     auto t = child->NextSibling();
     if(t)
       child = t->ToElement();
@@ -126,13 +139,11 @@ Init(const string& _file) {
       child = nullptr;
   }
 
-
-
   return rsc;
 }
 
 Font* 
 Resources::
 GetFont() {
-  return m_instance->m_fonts.begin()->second;
+  return m_instance->m_defaultFont;
 }

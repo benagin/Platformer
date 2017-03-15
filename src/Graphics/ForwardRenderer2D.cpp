@@ -21,23 +21,26 @@ Init() {
 
   // create a new matrix stack
   m_matrixStack = new MatrixStack;
-  
+
   // pushing an identity matrix onto stack
   m_matrixStack->pushMatrix();
 
   // getting the sprite shader from resouces
   m_textureShader = Resources::Get()->GetShader("forward");
 
+  // binding the sprite shader
   m_textureShader->Bind();
-  glCheckError();
-  // Setting attributes and unifomrs
+  
+  // Setting attributes and uniforms
   m_textureShader->AddAttribute("vertex");
 
   m_textureShader->AddUniform("projection");
   m_textureShader->AddUniform("modelview");
   m_textureShader->AddUniform("textures");
   m_textureShader->AddUniform("color");
-  
+
+
+  // setting constant uniforms
   auto perspective = glm::ortho(0.0f, (float) m_bufferSize.x, (float) m_bufferSize.y, 0.0f, -1.0f, 1.0f);
   m_textureShader->SetMatrix4("projection", perspective);
   m_textureShader->SetVector3f("color", 1.0f, 1.0f, 1.0f);
@@ -47,51 +50,27 @@ Init() {
   // getting the text shader, The sprite shader might be used to render this.
   m_textShader = Resources::Get()->GetShader("text");
 
-
-  /*
-  GLfloat vertices[] = {
-        // Positions            // Texture Coords
-        1.f, 1.f, 1.0f, 1.0f,   // Top Right
-        1.f, 0.f, 1.0f, 0.0f,   // Bottom Right
-        0.f, 0.f, 0.0f, 0.0f,   // Bottom Left
-        0.f, 1.f, 0.0f, 1.0f,   // Top Left 
-  }; 
-  */
-
   GLfloat vertices[] = {
     0.0f, 1.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 0.0f, 
+    0.0f, 0.0f, 0.0f, 0.0f,
 
     0.0f, 1.0f, 0.0f, 1.0f,
     1.0f, 1.0f, 1.0f, 1.0f,
     1.0f, 0.0f, 1.0f, 0.0
   };
- /* 
-  GLuint indices[] = {
-    0, 1, 3,
-    1, 2, 3
-  };
-  */
 
-  glGenVertexArrays(1, &vao);
-  glGenBuffers(1, &vbo);
-//   glGenBuffers(1, &ebo);
+  m_vertexArray = new VertexArray;
+  m_vertexArray->Bind();
 
-  glBindVertexArray(vao);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-//   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-//   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+  m_vertexBuffer = new VertexBuffer(sizeof(vertices), vertices, StaticDraw);
 
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
   glEnableVertexAttribArray(0);
+
+  m_vertexArray->Unbind();
   glCheckError();
 
-  glBindVertexArray(0); // Unbind VAO 
-  
   cout << "Finished Renderer" << endl;
 }
 
@@ -128,28 +107,16 @@ Begin() {
 void
 ForwardRenderer2D::
 Present() {
+  // the texture is bound in Submit
   m_textureShader->Bind();
-  glCheckError(); 
-  glCheckError(); 
+  m_vertexArray->Bind();
 
-  // m_texture->Bind();
-
-  // m_vertexArray->Bind();
-  // m_indexBuffer->Bind();
-
-  // m_vertexArray->Draw(6);
-  glBindVertexArray(vao);
-//   glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
   glCheckError();
-  glBindVertexArray(0);
 
-  // m_indexBuffer->Unbind();
-  // m_vertexArray->Unbind();
-  // m_texture->Unbind();
-
+  m_vertexArray->Unbind();
+  m_texture->Unbind();
   m_textureShader->Unbind();
-  glCheckError();
 }
 
 

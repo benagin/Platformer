@@ -27,8 +27,8 @@ Init() {
   m_window = Window::Init(Windowed);
   m_window->Init();
   Game::InitGlew();
-  glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA); 
-  glClearColor(0.7f,0.7f,0.8f,1.0f); 
+  glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+  glClearColor(1.f,1.f,1.f,1.0f); 
   m_resources = Resources::Init("../assets/XML/Resources/resources.xml");
   m_inputManager = new InputManager(this);
   m_inputManager->Init();
@@ -49,16 +49,18 @@ Init() {
   glCheckError();
   
 
-  Entity* temp = new Entity(
-    m_resources->GetTexture("person"),
-    glm::vec3(10,10,0),
-    glm::vec2(100,100)); 
+  Entity* temp;
+
+  temp = new Entity(
+    m_resources->GetTexture("player"),
+    glm::vec3(150,10,0),
+    glm::vec2(32,68));
   m_entities.push_back(temp);
 
   temp = new Entity(
-    m_resources->GetTexture("person"),
-    glm::vec3(10,150,0),
-    glm::vec2(100,100));
+    m_resources->GetTexture("grass_0"),
+    glm::vec3(150,78,0),
+    glm::vec2(32,68));
   m_entities.push_back(temp);
 
   m_camera.SetInitDistance(2.);
@@ -80,12 +82,6 @@ Update() {
 void
 Game::
 Render() {
-  // m_renderer->Begin();
-  for(auto e : m_entities) {
-    m_renderer->Submit(e);
-  }
-  // m_renderer->Present();
-  // m_renderer->End();
 
   // Reset camera aspect if window size changes.
   m_camera.SetAspect((float) m_window->GetWidth()/(float) m_window->GetHeight());
@@ -129,6 +125,13 @@ RenderGame() {
 
   P.popMatrix();
   MV.popMatrix();
+
+  m_renderer->Begin();
+  for(auto e : m_entities) {
+    m_renderer->Submit(e);
+  }
+  // m_renderer->Present();
+  m_renderer->End();
 }
 
 
@@ -211,6 +214,22 @@ ProcessInput() {
   switch(event->GetType()) {
     case KeyInput: {
       auto keyEvent = (KeyEvent*) event;
+      switch(keyEvent->GetKey()) {
+        case Key_ESC:
+          if(keyEvent->GetAction() == Action_Press)
+            QuitGame();
+          break;
+        case Key_P:
+          if(keyEvent->GetAction() == Action_Press) {
+            if(m_state == Gameplay)
+              m_state = Menu;
+            else
+              m_state = Gameplay;
+          }
+        default:
+          auto n = []() {};
+          n();
+      }
       if(keyEvent->GetKey() == Key_ESC && keyEvent->GetAction() == Action_Press) {
         // Maybe have an are you sure you want to quit message.
         QuitGame();

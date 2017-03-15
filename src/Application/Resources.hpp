@@ -38,6 +38,7 @@ class Resources {
     static Resources* Get();
     static Resources* Init(const string& _file);
     static Font* GetFont();
+    Font* m_defaultFont;
   private:
     map<string, Font*> m_fonts;
     map<string, Texture2D*> m_textures;
